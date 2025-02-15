@@ -1,2 +1,2 @@
-# ipmiexp
-IPMI explorer program
+# ipmiexplorer
+An IPMI explorer program.
