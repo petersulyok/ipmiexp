@@ -174,4 +174,4 @@ cython_debug/
 .idea/
 
 # Pyenv
-.python-versions
+.python-version
