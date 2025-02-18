@@ -3,8 +3,8 @@ requires = ["setuptools>=61.0", "pytest"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "smfc"
-description = "IPMI Explorer program"
+name = "ipmiexplorer"
+description = "An IPMI Explorer Program"
 readme = "README.md"
 version = "0.1.0"
 authors = [
@@ -22,6 +22,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Operating System :: POSIX :: Linux",
     "Topic :: System :: Hardware",
