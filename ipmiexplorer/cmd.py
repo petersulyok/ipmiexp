@@ -8,6 +8,7 @@ from .app import IpmiExplorerApp
 def main() -> None:
     """Entry point of the `ipmiexplorer` command."""
     app = IpmiExplorerApp()
+    app.title="IPMI Explorer"
     app.run()
 
 
