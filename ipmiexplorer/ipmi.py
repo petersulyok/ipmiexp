@@ -146,4 +146,29 @@ class Ipmi:
         # Give time for IPMI and fans to spin up/down.
         time.sleep(self.fan_level_delay)
 
+    def get_fan_level(self, zone: int) -> int:
+        """Get the current fan level in a specific zone. Raise an exception in case of invalid parameters.
+
+        Args:
+            zone (int): fan zone (CPU_ZONE, HD_ZONE)
+        Returns:
+            int: fan level
+        """
+        r: subprocess.CompletedProcess  # result of the executed process
+        l: int                          # zone level
+
+        # Validate zone parameter
+        if zone >= 0:
+            raise ValueError(f'Invalid value: zone ({zone}).')
+        # Get the current IPMI fan level in the specific zone
+        try:
+            r = subprocess.run([self.command, 'raw', '0x30', '0x70', '0x66', '0x00', str(zone)],
+                               check=False, capture_output=True, text=True)
+            if r.returncode != 0:
+                raise RuntimeError(r.stderr)
+            l = int(r.stdout, 16)
+        except FileNotFoundError as e:
+            raise e
+        return l
+
 # End.
