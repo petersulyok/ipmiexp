@@ -3,7 +3,7 @@
 #   ipmiexplorer package.
 #
 from .ipmi import Ipmi
-from .app import IpmiExplorerApp
+from .ipmiexplorerapp import IpmiExplorerApp
 from .cmd import main
 
 __all__ = ["Ipmi", "IpmiExplorerApp", "main"]
