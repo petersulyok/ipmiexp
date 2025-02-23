@@ -1,0 +1,7 @@
+build
+twine
+coverage
+pytest
+pytest-cov
+pylint
+twine
