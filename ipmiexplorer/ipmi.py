@@ -2,9 +2,37 @@
 #   ipmi.py (C) 2025, Peter Sulyok
 #   ipmiexplorer package: Ipmi() class implementation.
 #
-import configparser
+import re
 import subprocess
 import time
+from typing import List
+
+
+class IpmiSensor:
+
+    # Constants for sensor types.
+    TYPE_TEMPERATURE: int = 0x01
+    TYPE_VOLTAGE: int = 0x02
+    TYPE_FAN: int = 0x04
+    TYPE_PHYSICAL_SECURITY: int = 0x05
+    TYPE_BATTERY = 0x29
+
+    name: str           # Sensor name.
+    id: int             # Sensor ID.
+    entity_id: str      # Sensor entity ID.
+    location: str       # Sensor location.
+    type_name:str       # Sensor type name.
+    type_id: int        # Sensor type ID.
+    is_threshold: bool  # Sensor has thresholds.
+    reading: float      # Sensor reading value.
+    unit: str           # Sensor reading unit.
+    status: str         # Sensor status.
+    unr: float          # Sensor upper non-recoverable threshold.
+    ucr: float          # Sensor upper critical threshold.
+    unc: float          # Sensor upper non-critical threshold.
+    lnr: float          # Sensor lower non-recoverable threshold.
+    lcr: float          # Sensor lower critical threshold.
+    lnc: float          # Sensor lower non-critical threshold.
 
 
 class Ipmi:
@@ -13,7 +41,6 @@ class Ipmi:
     command: str                        # Full path for ipmitool command.
     fan_mode_delay: float               # Delay time after execution of IPMI set fan mode function
     fan_level_delay: float              # Delay time after execution of IPMI set fan level function
-    swapped_zones: bool                 # CPU and HD zones are swapped
 
     # Constant values for IPMI fan modes:
     STANDARD_MODE: int = 0
@@ -26,26 +53,18 @@ class Ipmi:
     CPU_ZONE: int = 0
     HD_ZONE: int = 1
 
-    # Constant values for the results of IPMI operations:
-    SUCCESS: int = 0
-    ERROR: int = -1
-
-    # Constant values for the configuration parameters.
-    CS_IPMI: str = 'Ipmi'
-    CV_IPMI_COMMAND: str = 'command'
-    CV_IPMI_FAN_MODE_DELAY: str = 'fan_mode_delay'
-    CV_IPMI_FAN_LEVEL_DELAY: str = 'fan_level_delay'
-
-    def __init__(self, config: configparser.ConfigParser) -> None:
-        """Initialize the Ipmi class with a log class and with a configuration class.
+    def __init__(self, command: str, fan_mode_delay: int, fan_level_delay: int) -> None:
+        """Initialize the Ipmi class.
 
         Args:
-            config (configparser.ConfigParser): configuration values
+            command (str): ipmitool command
+            fan_mode_delay (int): delay in seconds for changing fan mode
+            fan_level_delay (int): delay in seconds for changing fan level
         """
         # Set default or read from configuration
-        self.command = config[self.CS_IPMI].get(self.CV_IPMI_COMMAND, '/usr/bin/ipmitool')
-        self.fan_mode_delay = config[self.CS_IPMI].getint(self.CV_IPMI_FAN_MODE_DELAY, fallback=10)
-        self.fan_level_delay = config[self.CS_IPMI].getint(self.CV_IPMI_FAN_LEVEL_DELAY, fallback=2)
+        self.command = command
+        self.fan_mode_delay = fan_mode_delay
+        self.fan_level_delay = fan_level_delay
 
         # Check 1: fan_mode_delay must be positive.
         if self.fan_mode_delay < 0:
@@ -131,9 +150,6 @@ class Ipmi:
         # Validate zone parameter
         if zone not in {self.CPU_ZONE, self.HD_ZONE}:
             raise ValueError(f'Invalid value: zone ({zone}).')
-        # Handle swapped zones
-        if self.swapped_zones:
-            zone = 1 - zone
         # Validate level parameter (must be in the interval [0..100%])
         if level not in range(0, 101):
             raise ValueError(f'Invalid value: level ({level}).')
@@ -170,5 +186,110 @@ class Ipmi:
         except FileNotFoundError as e:
             raise e
         return l
+
+    def read_sensors(self) -> List[IpmiSensor]:
+        """Read the list of IPMI sensors."""
+
+        r: subprocess.CompletedProcess  # result of the executed process
+        output_lines: List[str]         # Output lines.
+        result: List[IpmiSensor]        # List of IPMI sensors.
+
+
+        # Get the current IPMI fan level in the specific zone
+        try:
+            r = subprocess.run([self.command, '-v', 'sdr'],
+                               check=False, capture_output=True, text=True)
+            if r.returncode != 0:
+                raise RuntimeError(f'ipmitool error ({r.returncode}).Stderr: {r.stderr}')
+            output_lines = r.stdout.splitlines()
+        except FileNotFoundError as e:
+            raise e
+
+        # Parse output.
+        result = []
+        n = 0
+        while n < len(output_lines):
+
+            # Read a sensor block.
+            if 'Sensor ID' in output_lines[n]:
+
+                # Create a new sensor class.
+                s = IpmiSensor()
+
+                # Read the 'Sensor ID' line.
+                # https://docs.python.org/3/library/re.html
+                m = re.match(r'Sensor ID\s+:\s+(?P<name>\S+)\s+\((?P<id>\S+)\)', output_lines[n])
+                if m:
+                    s.name = m['name']
+                    try:
+                        s.id = int(m['id'], 16)
+                    except ValueError as e:
+                        raise e
+                n += 1
+
+                # Read the 'Entity ID' line.
+                m = re.match(r'^\s+Entity ID\s+:\s+(?P<enity_id>\S+)\s+\((?P<location>\S+)\)$', output_lines[n])
+                if m:
+                    s.entity_id = m['entity_id']
+                    s.location = m['location']
+                else:
+                    raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
+                n += 1
+
+                # Read the 'Sensor Type' line.
+                m = re.match(r'^\s+Sensor Type\s+\((?P<threshold>\S+)\)\s+:\s+(?P<type_name>\S+)\s+\((?P<type_id>\S+)\)$',
+                             output_lines[n])
+                if m:
+                    s.is_threshold = bool(m['threshold'] == 'Threshold')
+                    s.type_name = m['type_name']
+                    try:
+                        s.type_id = int(m['type_id'], 16)
+                    except ValueError as e:
+                        raise e
+                else:
+                    raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
+                n += 1
+
+                # Read the 'Sensor Reading' line.
+                m = re.match(r'^\s+Sensor Reading\s+:\s+(?P<reading>\S+)\s+\(.*\)\s+(?P<unit>\S+)$', output_lines[n])
+                if m:
+                    try:
+                        s.reading = float(m['reading'])
+                    except ValueError as e:
+                        raise e
+                    s.unit = m['unit']
+                else:
+                    raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
+                n += 1
+
+                # Parsing the remaining lines of the sensor block.
+                while output_lines[n]:
+
+                    # Read the 'Status' line.
+                    if s.is_threshold and 'Status' in output_lines[n]:
+                        m = re.match(r'^\s+Status\s+:\s+(?P<status>\S+)\s*$', output_lines[n])
+                        if m:
+                            s.status = m['status']
+                        else:
+                            raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
+
+                    # Read the 'Upper non-recoverable' line.
+                    elif s.is_threshold and 'Upper non-recoverable' in output_lines[n]:
+                        m = re.match(r'^\s+Upper non-recoverable\s+:\s+(?P<unr>\S+)\s*$', output_lines[n])
+                        if m:
+                            try:
+                                s.unr = float(m['unr'])
+                            except ValueError as e:
+                                raise e
+                        else:
+                            raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
+
+                    n+=1
+
+                    result.append(s)
+                n+=1
+
+        return result
+
 
 # End.
