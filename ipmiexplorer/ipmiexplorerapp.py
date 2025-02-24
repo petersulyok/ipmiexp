@@ -4,6 +4,7 @@
 #
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer
+
 from ipmiexplorer.config import Config
 from ipmiexplorer.ipmi import Ipmi
 
@@ -16,6 +17,8 @@ class IpmiExplorerApp(App):
         """"""
         # Load configuration.
         self.config = Config(config_file)
+        self.ipmi = Ipmi(self.config.ipmi_command, self.config.ipmi_fan_mode_delay, self.config.ipmi_fan_level_delay)
+        self.ipmi.read_sensors()
         super().__init__()
 
 
@@ -23,4 +26,3 @@ class IpmiExplorerApp(App):
         self.title="IPMI Explorer"
         yield Header(show_clock=True)
         yield Footer()
-
