@@ -30,6 +30,8 @@ class Config:
         # Expand path to user directory if needed.
         if '~' in config_file:
             self.config_file = os.path.expanduser(config_file)
+        else:
+            self.config_file = config_file
 
         # Create a new config parser class.
         self.pc = ConfigParser()
@@ -60,7 +62,7 @@ fan_level_delay=2
 #remote_parameters=-U USERNAME -P PASSWORD -H HOST
 """)
             # Read the configuration again and exit if not successful.
-            if not self.pc.read(self.config_file):
+            if not self.pc.read(config_file):
                 sys.exit(5)
 
         # Read IPMI configuration parameters.
