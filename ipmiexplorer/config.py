@@ -3,6 +3,7 @@
 #   ipmiexplorer package: Config() class implementation.
 #
 import os
+import sys
 from configparser import ConfigParser
 from pathlib import Path
 
@@ -26,20 +27,24 @@ class Config:
 
     def __init__(self, config_file: str):
 
-        # If configuration file name is not specified, use the default path.
+        # Expand path to user directory if needed.
         if '~' in config_file:
             self.config_file = os.path.expanduser(config_file)
 
         # Create a new config parser class.
         self.pc = ConfigParser()
 
+        # If parsing of the configuration file is not successful.
         if not self.pc.read(self.config_file):
 
+            # Create the parent directory.
             config_dir = Path(self.config_file).parent.absolute()
             if not os.path.exists(config_dir):
                 os.makedirs(config_dir)
 
-            default_config = """#
+            # Create a new config file with default values.
+            with open(self.config_file, 'w+t', encoding='UTF-8') as f:
+                f.write("""#
 #   settings.ini (C) 2025, Peter Sulyok
 #   ipmiexplorer configuration parameters
 #
@@ -53,11 +58,12 @@ fan_mode_delay=10
 fan_level_delay=2
 # IPMI parameters for remote access (HOST is the BMC network address).
 #remote_parameters=-U USERNAME -P PASSWORD -H HOST
-            """
-            with open(self.config_file, 'w+t', encoding='UTF-8') as f:
-                f.write(default_config)
-            self.pc.read(self.config_file);
+""")
+            # Read the configuration again and exit if not successful.
+            if not self.pc.read(self.config_file):
+                sys.exit(5)
 
+        # Read IPMI configuration parameters.
         self.ipmi_command = self.pc[self.CS_IPMI].get(self.CV_IPMI_COMMAND, self.DEF_IPMITOOL_PATH)
         self.ipmi_fan_mode_delay = self.pc[self.CS_IPMI].getint(self.CV_IPMI_FAN_MODE_DELAY, fallback=10)
         self.ipmi_fan_level_delay = self.pc[self.CS_IPMI].getint(self.CV_IPMI_FAN_MODE_DELAY, fallback=2)
