@@ -23,9 +23,11 @@ class IpmiSensor:
     location: str       # Sensor location.
     type_name:str       # Sensor type name.
     type_id: int        # Sensor type ID.
-    is_threshold: bool  # Sensor has thresholds.
+    has_threshold: bool # Sensor has thresholds.
+    has_reading:bool    # Sensor has reading.
     reading: float      # Sensor reading value.
     unit: str           # Sensor reading unit.
+    has_status: bool    # Sensor has status.
     status: str         # Sensor status.
     unr: float          # Sensor upper non-recoverable threshold.
     ucr: float          # Sensor upper critical threshold.
@@ -217,7 +219,7 @@ class Ipmi:
 
                 # Read the 'Sensor ID' line.
                 # https://docs.python.org/3/library/re.html
-                m = re.match(r'Sensor ID\s+:\s+(?P<name>\S+)\s+\((?P<id>\S+)\)', output_lines[n])
+                m = re.match(r'^Sensor ID\s+:\s+(?P<name>.+)\s+\((?P<id>\S+)\)\s*$', output_lines[n])
                 if m:
                     s.name = m['name']
                     try:
@@ -225,9 +227,11 @@ class Ipmi:
                         n += 1
                     except ValueError as e:
                         raise e
+                else:
+                    raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
 
                 # Read the 'Entity ID' line.
-                m = re.match(r'^\s+Entity ID\s+:\s+(?P<enity_id>\S+)\s+\((?P<location>\S+)\)$', output_lines[n])
+                m = re.match(r'^\s+Entity ID\s+:\s+(?P<entity_id>\S+)\s+\((?P<location>.+)\)$', output_lines[n])
                 if m:
                     s.entity_id = m['entity_id']
                     s.location = m['location']
@@ -236,10 +240,10 @@ class Ipmi:
                     raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
 
                 # Read the 'Sensor Type' line.
-                m = re.match(r'^\s+Sensor Type\s+\((?P<threshold>\S+)\)\s+:\s+(?P<type_name>\S+)\s+\((?P<type_id>\S+)\)$',
+                m = re.match(r'^\s+Sensor Type\s+\((?P<threshold>\S+)\)\s*:\s+(?P<type_name>.+)\s+\((?P<type_id>\S+)\)$',
                              output_lines[n])
                 if m:
-                    s.is_threshold = bool(m['threshold'] == 'Threshold')
+                    s.has_threshold = bool(m['threshold'] == 'Threshold')
                     s.type_name = m['type_name']
                     try:
                         s.type_id = int(m['type_id'], 16)
@@ -250,30 +254,39 @@ class Ipmi:
                     raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
 
                 # Read the 'Sensor Reading' line.
-                m = re.match(r'^\s+Sensor Reading\s+:\s+(?P<reading>\S+)\s+\(.*\)\s+(?P<unit>\S+)$', output_lines[n])
-                if m:
-                    try:
-                        s.reading = float(m['reading'])
-                    except ValueError as e:
-                        raise e
-                    s.unit = m['unit']
-                    n += 1
+                m = re.match(r'^\s+Sensor Reading\s+:\s+No Reading\s+$', output_lines[n])
+                if m is None:
+                    s.has_reading = False
                 else:
-                    raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
+                    m = re.match(r'^\s+Sensor Reading\s+:\s+(?P<reading>\S+)\s+\(.*\)\s+(?P<unit>.+)$', output_lines[n])
+                    if m:
+                        s.has_reading = True;
+                        try:
+                            s.reading = float(m['reading'])
+                        except ValueError as e:
+                            raise e
+                        s.unit = m['unit']
+                        n += 1
+                    else:
+                        raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
 
                 # Parsing the remaining lines of the sensor block.
                 while output_lines[n]:
 
                     # Read the 'Status' line.
-                    if s.is_threshold and 'Status' in output_lines[n]:
-                        m = re.match(r'^\s+Status\s+:\s+(?P<status>\S+)\s*$', output_lines[n])
-                        if m:
-                            s.status = m['status']
+                    if s.has_threshold and 'Status' in output_lines[n]:
+                        m = re.match(r'^\s+Sensor Reading\s+:\s+No Available\s+$', output_lines[n])
+                        if m is None:
+                            s.has_status = False
                         else:
-                            raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
+                            m = re.match(r'^\s+Status\s+:\s+(?P<status>\S+)\s*$', output_lines[n])
+                            if m:
+                                s.status = m['status']
+                            else:
+                                raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
 
                     # Read the 'Upper non-recoverable' line.
-                    elif s.is_threshold and 'Upper non-recoverable' in output_lines[n]:
+                    elif s.has_threshold and 'Upper non-recoverable' in output_lines[n]:
                         m = re.match(r'^\s+Upper non-recoverable\s+:\s+(?P<unr>\S+)\s*$', output_lines[n])
                         if m:
                             try:
