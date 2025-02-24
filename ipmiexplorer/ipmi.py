@@ -105,11 +105,11 @@ class Ipmi:
         Args:
             mode (int): fan mode
         Returns:
-            str: name of the fan mode ('ERROR', 'STANDARD', 'FULL', 'OPTIMAL', 'PUE', 'HEAVY IO')
+            str: name of the fan mode ('???', 'STANDARD', 'FULL', 'OPTIMAL', 'PUE', 'HEAVY IO')
         """
         fan_mode_name: str              # Name of the fan mode
 
-        fan_mode_name = 'ERROR'
+        fan_mode_name = '???'
         if mode == self.STANDARD_MODE:
             fan_mode_name = 'STANDARD'
         elif mode == self.FULL_MODE:
@@ -188,14 +188,13 @@ class Ipmi:
         return l
 
     def read_sensors(self) -> List[IpmiSensor]:
-        """Read the list of IPMI sensors."""
+        """Read the detailed IPMI sensors information."""
 
         r: subprocess.CompletedProcess  # result of the executed process
         output_lines: List[str]         # Output lines.
         result: List[IpmiSensor]        # List of IPMI sensors.
 
-
-        # Get the current IPMI fan level in the specific zone
+        # Read detailed IPMI sensor information.
         try:
             r = subprocess.run([self.command, '-v', 'sdr'],
                                check=False, capture_output=True, text=True)
@@ -205,7 +204,7 @@ class Ipmi:
         except FileNotFoundError as e:
             raise e
 
-        # Parse output.
+        # Parsing loop of the output.
         result = []
         n = 0
         while n < len(output_lines):
@@ -223,18 +222,18 @@ class Ipmi:
                     s.name = m['name']
                     try:
                         s.id = int(m['id'], 16)
+                        n += 1
                     except ValueError as e:
                         raise e
-                n += 1
 
                 # Read the 'Entity ID' line.
                 m = re.match(r'^\s+Entity ID\s+:\s+(?P<enity_id>\S+)\s+\((?P<location>\S+)\)$', output_lines[n])
                 if m:
                     s.entity_id = m['entity_id']
                     s.location = m['location']
+                    n += 1
                 else:
                     raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
-                n += 1
 
                 # Read the 'Sensor Type' line.
                 m = re.match(r'^\s+Sensor Type\s+\((?P<threshold>\S+)\)\s+:\s+(?P<type_name>\S+)\s+\((?P<type_id>\S+)\)$',
@@ -244,11 +243,11 @@ class Ipmi:
                     s.type_name = m['type_name']
                     try:
                         s.type_id = int(m['type_id'], 16)
+                        n += 1
                     except ValueError as e:
                         raise e
                 else:
                     raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
-                n += 1
 
                 # Read the 'Sensor Reading' line.
                 m = re.match(r'^\s+Sensor Reading\s+:\s+(?P<reading>\S+)\s+\(.*\)\s+(?P<unit>\S+)$', output_lines[n])
@@ -258,9 +257,9 @@ class Ipmi:
                     except ValueError as e:
                         raise e
                     s.unit = m['unit']
+                    n += 1
                 else:
                     raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
-                n += 1
 
                 # Parsing the remaining lines of the sensor block.
                 while output_lines[n]:
@@ -284,12 +283,16 @@ class Ipmi:
                         else:
                             raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
 
+                    # Move to the next line.
                     n+=1
 
-                    result.append(s)
+                # Add the parsed sensor to the result list.
+                result.append(s)
+
+            # Otherwise move to the next line.
+            else:
                 n+=1
 
         return result
-
 
 # End.
