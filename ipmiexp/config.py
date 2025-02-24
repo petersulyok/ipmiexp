@@ -1,6 +1,6 @@
 #
 #   cmd.py (C) 2025, Peter Sulyok
-#   ipmiexplorer package: Config() class implementation.
+#   ipmiexp package: Config() class implementation.
 #
 import os
 import sys
@@ -46,7 +46,7 @@ class Config:
             with open(self.config_file, 'w+t', encoding='UTF-8') as f:
                 f.write("""#
 #   settings.ini (C) 2025, Peter Sulyok
-#   ipmiexplorer configuration parameters
+#   ipmiexp configuration parameters
 #
 
 [Ipmi]

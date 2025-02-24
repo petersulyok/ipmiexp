@@ -1,6 +1,6 @@
 #
 #   ipmi.py (C) 2025, Peter Sulyok
-#   ipmiexplorer package: Ipmi() class implementation.
+#   ipmiexp package: Ipmi() class implementation.
 #
 import re
 import subprocess

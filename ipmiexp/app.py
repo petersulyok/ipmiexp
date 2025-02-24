@@ -1,14 +1,14 @@
 #
-#   ipmiexplorerapp.py (C) 2025, Peter Sulyok
-#   ipmiexplorer package: IpmiExplorerApp() class implementation.
+#   app.py (C) 2025, Peter Sulyok
+#   ipmiexp package: IpmiExplorerApp() class implementation.
 #
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer
 
-from ipmiexplorer.config import Config
-from ipmiexplorer.ipmi import Ipmi
+from ipmiexp.config import Config
+from ipmiexp.ipmi import Ipmi
 
-class IpmiExplorerApp(App):
+class IpmiExpApp(App):
 
     config: Config      # Configuration class.
     ipmi: Ipmi          # Ipmi class.

@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "pytest"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ipmiexplorer"
+name = "ipmiexp"
 description = "An IPMI Explorer Program"
 readme = "README.md"
 version = "0.1.0"
@@ -29,18 +29,18 @@ classifiers = [
     "Development Status :: 4 - Beta"
 ]
 [project.urls]
-Homepage = "https://github.com/petersulyok/ipmiexplorer"
-Changelog = "https://github.com/petersulyok/ipmiexplorer/releases"
-Issues = "https://github.com/petersulyok/ipmiexplorer/issues"
+Homepage = "https://github.com/petersulyok/ipmiexp"
+Changelog = "https://github.com/petersulyok/ipmiexp/releases"
+Issues = "https://github.com/petersulyok/ipmiexp/issues"
 [project.optional-dependencies]
 test = [
     "pytest",
 ]
 [project.scripts]
-ipmiexplorer = "ipmiexplorer.cmd:main"
+ipmiexp = "ipmiexp.cmd:main"
 
 [tool.setuptools]
-packages = ["ipmiexplorer"]
+packages = ["ipmiexp"]
 
 # pytest options
 [tool.pytest.ini_options]

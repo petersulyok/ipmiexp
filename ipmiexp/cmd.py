@@ -1,16 +1,16 @@
 #
 #   cmd.py (C) 2025, Peter Sulyok
-#   ipmiexplorer package: main() function implementation, command-line interface.
+#   ipmiexp package: main() function implementation, command-line interface.
 #
 from argparse import ArgumentParser, Namespace
-from ipmiexplorer.config import Config
-from ipmiexplorer.ipmiexplorerapp import IpmiExplorerApp
+from ipmiexp.config import Config
+from ipmiexp.app import IpmiExpApp
 
 version_str: str = "0.1.0"
 
 
 def main() -> None:
-    """Entry point of the `ipmiexplorer` command."""
+    """Entry point of the `ipmiexp` command."""
     ap: ArgumentParser      # Argument parser.
     pr:Namespace            # Parsed arguments.
 
@@ -24,7 +24,7 @@ def main() -> None:
     # 2 - invalid parameter
     pr = ap.parse_args()
 
-    app = IpmiExplorerApp(pr.config_file)
+    app = IpmiExpApp(pr.config_file)
     app.run()
 
 
