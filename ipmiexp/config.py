@@ -11,6 +11,21 @@ class Config:
 
     DEF_IPMITOOL_PATH: str = '/usr/bin/ipmitool'
     DEF_CONFIG_FILE: str = '~/.config/ipmiexplorer/settings.ini'
+    DEF_CONFIG_VALUES: str = """#
+#   settings.ini (C) 2025, Peter Sulyok
+#   ipmiexp program configuration parameters
+#
+
+[Ipmi]
+# Path for ipmitool (str, default=/usr/bin/ipmitool)
+command=/usr/bin/ipmitool
+# Delay time after changing IPMI fan mode (int, seconds, default=10)
+fan_mode_delay=10
+# Delay time after changing IPMI fan level (int, seconds, default=2)
+fan_level_delay=2
+# IPMI parameters for remote access (HOST is the BMC network address).
+#remote_parameters=-U USERNAME -P PASSWORD -H HOST
+"""
 
     # Constant values for the configuration parameters.
     CS_IPMI: str = 'Ipmi'
@@ -19,7 +34,7 @@ class Config:
     CV_IPMI_FAN_LEVEL_DELAY: str = 'fan_level_delay'
 
     config_file: str        # Config file name.
-    pc: ConfigParser    # Parsed configuration.
+    pc: ConfigParser        # Parsed configuration.
 
     ipmi_command: str
     ipmi_fan_mode_delay: int
@@ -46,21 +61,8 @@ class Config:
 
             # Create a new config file with default values.
             with open(self.config_file, 'w+t', encoding='UTF-8') as f:
-                f.write("""#
-#   settings.ini (C) 2025, Peter Sulyok
-#   ipmiexp configuration parameters
-#
+                f.write(self.DEF_CONFIG_VALUES)
 
-[Ipmi]
-# Path for ipmitool (str, default=/usr/bin/ipmitool)
-command=/usr/bin/ipmitool
-# Delay time after changing IPMI fan mode (int, seconds, default=10)
-fan_mode_delay=10
-# Delay time after changing IPMI fan level (int, seconds, default=2)
-fan_level_delay=2
-# IPMI parameters for remote access (HOST is the BMC network address).
-#remote_parameters=-U USERNAME -P PASSWORD -H HOST
-""")
             # Read the configuration again and exit if not successful.
             if not self.pc.read(config_file):
                 sys.exit(5)
@@ -69,3 +71,5 @@ fan_level_delay=2
         self.ipmi_command = self.pc[self.CS_IPMI].get(self.CV_IPMI_COMMAND, self.DEF_IPMITOOL_PATH)
         self.ipmi_fan_mode_delay = self.pc[self.CS_IPMI].getint(self.CV_IPMI_FAN_MODE_DELAY, fallback=10)
         self.ipmi_fan_level_delay = self.pc[self.CS_IPMI].getint(self.CV_IPMI_FAN_MODE_DELAY, fallback=2)
+
+# End.
