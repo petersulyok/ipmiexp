@@ -10,7 +10,7 @@ from pathlib import Path
 class Config:
 
     DEF_IPMITOOL_PATH: str = '/usr/bin/ipmitool'
-    DEF_CONFIG_FILE: str = '~/.config/ipmiexplorer/settings.ini'
+    DEF_CONFIG_FILE: str = '~/.config/ipmiexp/settings.ini'
     DEF_CONFIG_VALUES: str = """#
 #   settings.ini (C) 2025, Peter Sulyok
 #   ipmiexp program configuration parameters
