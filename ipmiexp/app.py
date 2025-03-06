@@ -153,13 +153,13 @@ class IpmiExpApp(App):
                     lnc = IpmiSensor.NO_VALUE
             else:
                 unr = ucr = unc = lnr = lcr = lnc = IpmiSensor.NO_VALUE
-            table.update_cell_at(Coordinate(3, row), value)
-            table.update_cell_at(Coordinate(5, row), lnr)
-            table.update_cell_at(Coordinate(6, row), lcr)
-            table.update_cell_at(Coordinate(7, row), lnc)
-            table.update_cell_at(Coordinate(8, row), unc)
-            table.update_cell_at(Coordinate(9, row), ucr)
-            table.update_cell_at(Coordinate(10, row), unr)
+            table.update_cell_at(Coordinate(row, 3), value)
+            table.update_cell_at(Coordinate(row, 5), lnr)
+            table.update_cell_at(Coordinate(row, 6), lcr)
+            table.update_cell_at(Coordinate(row, 7), lnc)
+            table.update_cell_at(Coordinate(row, 8), unc)
+            table.update_cell_at(Coordinate(row, 9), ucr)
+            table.update_cell_at(Coordinate(row, 10), unr)
             row+=1
             #table.add_row(f"0x{r.id:x}", r.name, r.location, value, unit, lnr, lcr, lnc, unc, ucr, unr,
             #              key=f"0x{r.id:x}")
