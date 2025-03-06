@@ -452,7 +452,7 @@ class Ipmi:
 
         return result
 
-    def read_events(self) -> List[str]:
+    def read_events(self) -> str:
         """Read IPMI events.
 
         Args:
