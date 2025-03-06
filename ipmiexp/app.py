@@ -3,15 +3,15 @@
 #   ipmiexp package: IpmiExpApp() class implementation.
 #
 from typing import List
-from textual import on
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer
 from textual.containers import HorizontalGroup, Vertical, VerticalScroll
-from textual.widgets import Button, ContentSwitcher, DataTable, Label
+from textual.widgets import Static, Button, ContentSwitcher, DataTable, Label
 
 from ipmiexp.config import Config
 from ipmiexp.ipmi import Ipmi, IpmiSensor, IpmiZone
-from ipmiexp.modal import ModalWindow
+from ipmiexp.modal import SetFanModeWindow
+
 
 class IpmiExpApp(App):
 
@@ -19,6 +19,13 @@ class IpmiExpApp(App):
     ipmi: Ipmi                  # Ipmi class.
     sensors: List[IpmiSensor]   # IPMI sensors.
     zones: List[IpmiZone]       # Ipmi zones.
+    fan_mode: int               # Current IPMI fan mode.
+    events: str                 # IPMI events.
+
+    BINDINGS = [
+        ("t", "set_threshold", "Set threshold"),
+        ("l", "set_zone_level", "Set zone level"),
+    ]
 
     CSS = """
     Screen {
@@ -30,13 +37,23 @@ class IpmiExpApp(App):
         height: 1fr;
     }
     
+    .Selected_content {
+        background: $primary;
+    }
+    
     #fans_table {
         border: round $primary;
     }
     #zones_table {
         border: round $primary;
     }
+    #current_fan_mode {
+        width: 40;
+        padding: 1;
+        background: $secondary;
+    }
     """
+
 
     def __init__(self, config_file: str) -> None:
         """"""
@@ -45,6 +62,8 @@ class IpmiExpApp(App):
         self.ipmi = Ipmi(self.config.ipmi_command, self.config.ipmi_fan_mode_delay, self.config.ipmi_fan_level_delay)
         self.sensors = self.ipmi.read_sensors()
         self.zones = self.ipmi.read_zones()
+        self.fan_mode = self.ipmi.get_fan_mode()
+        self.event = self.ipmi.read_events()
         super().__init__()
 
     def compose(self) -> ComposeResult:
@@ -53,41 +72,55 @@ class IpmiExpApp(App):
         yield Footer()
         with HorizontalGroup():
             yield Button("Sensors", id="sensors_page", variant="primary")
-            yield Button("Fans", id="fans_page", variant="default")
-            yield Button("Event", id="events_page", variant="default")
-            yield Button("BMC", id="bmc_page", variant="default")
-            yield Button("Settings", id="settings_page", variant="default")
+            yield Button("Fans", id="fans_page")
+            yield Button("Events", id="events_page")
+            yield Button("BMC", id="bmc_page")
+            yield Button("Settings", id="settings_page")
         with ContentSwitcher(initial="sensors_page"):
             yield DataTable(id="sensors_page", cursor_type='row', zebra_stripes=True)
             with VerticalScroll(id="fans_page"):
-                yield Label("Fan mode: ")
                 with HorizontalGroup():
-                    yield Button("Set mode", id="set_mode")
-                    yield Button("Set level", id="set_level")
-                    yield Button("Find zones", id="find_zones")
+                    yield Label(f"Current fan mode: {self.ipmi.get_fan_mode_name(self.fan_mode)}"
+                                f" ({self.fan_mode})", id="current_fan_mode", )
+                    yield Button("Set fan mode", id="set_fan_mode")
+                    yield Button("Explore", id="find_zones")
                 with HorizontalGroup():
                     yield DataTable(id="fans_table", cursor_type='row', zebra_stripes=True)
                     yield DataTable(id="zones_table", cursor_type='row', zebra_stripes=True)
             with VerticalScroll(id="events_page"):
-                yield Label("Events")
+                yield Label(self.event)
             with VerticalScroll(id="bmc_page"):
                 yield Label("BMC")
             with VerticalScroll(id="settings_page"):
                 yield Label("Settings")
 
+    def action_set_threshold(self) -> None:
+        if self.query_one(ContentSwitcher).current == "sensors_page":
+            print("Threshold.")
+
+    def action_set_zone_level(self) -> None:
+        if self.query_one(ContentSwitcher).current == "fans_page":
+            print("Level.")
+
     def on_button_pressed(self, event: Button.Pressed) -> None:
+
+        def save_new_fan_mode(result: int):
+            if result != -1 and result != self.fan_mode:
+                self.ipmi.set_fan_mode(result)
+                self.fan_mode = self.ipmi.get_fan_mode()
+                self.query_one("#current_fan_mode",
+                               Label).update(f"Current fan mode: {self.ipmi.get_fan_mode_name(self.fan_mode)}"
+                                             f" ({self.fan_mode})")
 
         if event.button.id in {"sensors_page", "fans_page", "events_page", "bmc_page", "settings_page"}:
             self.query_one('#'+self.query_one(ContentSwitcher).current, Button).variant = "default"
             self.query_one(ContentSwitcher).current = event.button.id
-            self.query_one('#'+event.button.id, Button).variant = 'primary'
-        if event.button.id == "set_level":
-            m = ModalWindow("Hello", "Yes", "No")
-            self.push_screen(m)
-
+            self.query_one('#'+event.button.id, Button).variant = "primary"
+        if event.button.id == "set_fan_mode":
+            m = SetFanModeWindow(self.fan_mode)
+            self.push_screen(m, callback=save_new_fan_mode)
 
     def on_mount(self) -> None:
-
         # "Sensors" content.
         table = self.query_one("#sensors_page", DataTable)
         table.add_columns("ID", "Name", "Location", "Reading", "Unit", "LNR", "LCR", "LNC", "UNC", "UCR", "UNR")
@@ -103,17 +136,35 @@ class IpmiExpApp(App):
                     value = f'0x{r.reading:02x}'
                     unit = ''
             else:
-                value = "-"
-                unit = ''
+                value = IpmiSensor.NO_VALUE
+                unit = IpmiSensor.EMPTY_VALUE
             if r.has_reading and r.has_threshold:
-                unr = f'{r.unr:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.unr}'
-                ucr = f'{r.ucr:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.ucr}'
-                unc = f'{r.unc:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.unc}'
-                lnr = f'{r.lnr:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.lnr}'
-                lcr = f'{r.lcr:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.lcr}'
-                lnc = f'{r.lnc:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.lnc}'
+                if r.has_unr:
+                    unr = f'{r.unr:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.unr}'
+                else:
+                    unr = IpmiSensor.NO_VALUE
+                if r.has_ucr:
+                    ucr = f'{r.ucr:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.ucr}'
+                else:
+                    ucr = IpmiSensor.NO_VALUE
+                if r.has_unr:
+                    unc = f'{r.unc:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.unc}'
+                else:
+                    unc = IpmiSensor.NO_VALUE
+                if r.has_lnr:
+                    lnr = f'{r.lnr:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.lnr}'
+                else:
+                    lnr = IpmiSensor.NO_VALUE
+                if r.has_lcr:
+                    lcr = f'{r.lcr:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.lcr}'
+                else:
+                    lcr = IpmiSensor.NO_VALUE
+                if r.has_lnc:
+                    lnc = f'{r.lnc:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.lnc}'
+                else:
+                    lnc = IpmiSensor.NO_VALUE
             else:
-                unr = ucr = unc = lnr = lcr = lnc = '-'
+                unr = ucr = unc = lnr = lcr = lnc = IpmiSensor.NO_VALUE
             table.add_rows([(f'0x{r.id:x}', r.name, r.location, value, unit, lnr, lcr, lnc, unc, ucr, unr)])
 
         # "Fans" page.
@@ -122,7 +173,8 @@ class IpmiExpApp(App):
         table.add_columns("ID", "Name", "RPM", "Level")
         for r in self.sensors:
             if r.type_id == IpmiSensor.TYPE_FAN:
-                table.add_rows([(f"0x{r.id:02x}", r.name, r.reading if r.has_reading else "-", "-")])
+                table.add_rows([(f"0x{r.id:02x}", r.name, r.reading if r.has_reading else IpmiSensor.NO_VALUE,
+                                 IpmiSensor.NO_VALUE)])
         table = self.query_one("#zones_table", DataTable)
         table.border_title = "Zones"
         table.add_columns("Number", "Name", "Level", "Fans")
