@@ -1,0 +1,735 @@
+Loading IANA PEN Registry...
+Running Get VSO Capabilities my_addr 0x20, transit 0, target 0
+Invalid completion code received: Invalid command
+Discovered IPMB address 0x0
+Sensor ID              : CPU Temp (0x1)
+ Entity ID             : 3.1 (Processor)
+ Sensor Type (Threshold)  : Temperature (0x01)
+ Sensor Reading        : 29 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : 20.000
+ Normal Minimum        : 11.000
+ Normal Maximum        : 80.000
+ Upper critical        : 98.000
+ Lower critical        : 5.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr ucr
+ Settable Thresholds   : lcr ucr
+ Threshold Read Mask   : lcr ucr
+ Assertion Events      :
+ Assertions Enabled    : lcr- ucr+
+ Deassertions Enabled  : lcr- ucr+
+
+Sensor ID              : PCH Temp (0xa)
+ Entity ID             : 7.1 (System Board)
+ Sensor Type (Threshold)  : Temperature (0x01)
+ Sensor Reading        : 52 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : 20.000
+ Normal Minimum        : 11.000
+ Normal Maximum        : 84.000
+ Upper critical        : 90.000
+ Lower critical        : 5.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr ucr
+ Settable Thresholds   : lcr ucr
+ Threshold Read Mask   : lcr ucr
+ Assertion Events      :
+ Assertions Enabled    : lcr- ucr+
+ Deassertions Enabled  : lcr- ucr+
+
+Sensor ID              : System Temp (0xb)
+ Entity ID             : 7.2 (System Board)
+ Sensor Type (Threshold)  : Temperature (0x01)
+ Sensor Reading        : 29 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : 20.000
+ Normal Minimum        : 11.000
+ Normal Maximum        : 79.000
+ Upper critical        : 85.000
+ Lower critical        : 5.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr ucr
+ Settable Thresholds   : lcr ucr
+ Threshold Read Mask   : lcr ucr
+ Assertion Events      :
+ Assertions Enabled    : lcr- ucr+
+ Deassertions Enabled  : lcr- ucr+
+
+Sensor ID              : Peripheral Temp (0xc)
+ Entity ID             : 7.3 (System Board)
+ Sensor Type (Threshold)  : Temperature (0x01)
+ Sensor Reading        : 25 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : 20.000
+ Normal Minimum        : 11.000
+ Normal Maximum        : 79.000
+ Upper critical        : 85.000
+ Lower critical        : 5.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr ucr
+ Settable Thresholds   : lcr ucr
+ Threshold Read Mask   : lcr ucr
+ Assertion Events      :
+ Assertions Enabled    : lcr- ucr+
+ Deassertions Enabled  : lcr- ucr+
+
+Sensor ID              : VRM_VCORE Temp (0x10)
+ Entity ID             : 7.16 (System Board)
+ Sensor Type (Threshold)  : Temperature (0x01)
+ Sensor Reading        : 24 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : 20.000
+ Normal Minimum        : 11.000
+ Normal Maximum        : 94.000
+ Upper critical        : 100.000
+ Lower critical        : 5.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr ucr
+ Settable Thresholds   : lcr ucr
+ Threshold Read Mask   : lcr ucr
+ Assertion Events      :
+ Assertions Enabled    : lcr- ucr+
+ Deassertions Enabled  : lcr- ucr+
+
+Sensor ID              : VRMVIN_AUX Temp (0x11)
+ Entity ID             : 7.17 (System Board)
+ Sensor Type (Threshold)  : Temperature (0x01)
+ Sensor Reading        : 22 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : 20.000
+ Normal Minimum        : 11.000
+ Normal Maximum        : 94.000
+ Upper critical        : 100.000
+ Lower critical        : 5.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr ucr
+ Settable Thresholds   : lcr ucr
+ Threshold Read Mask   : lcr ucr
+ Assertion Events      :
+ Assertions Enabled    : lcr- ucr+
+ Deassertions Enabled  : lcr- ucr+
+
+Sensor ID              : DIMMAB Temp (0xb0)
+ Entity ID             : 32.0 (Memory Device)
+ Sensor Type (Threshold)  : Temperature (0x01)
+ Sensor Reading        : 30 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : 20.000
+ Normal Minimum        : 11.000
+ Normal Maximum        : 79.000
+ Upper critical        : 85.000
+ Lower critical        : 5.000
+ Positive Hysteresis   : 1.000
+ Negative Hysteresis   : 1.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr ucr
+ Settable Thresholds   : lcr ucr
+ Threshold Read Mask   : lcr ucr
+ Assertion Events      :
+ Assertions Enabled    : lcr- ucr+
+ Deassertions Enabled  : lcr- ucr+
+
+Sensor ID              : M2_SSD1 Temp (0x8c)
+ Entity ID             : 7.48 (System Board)
+ Sensor Type (Threshold)  : Temperature (0x01)
+ Sensor Reading        : No Reading
+ Status                : Not Available
+ Nominal Reading       : 20.000
+ Normal Minimum        : 11.000
+ Normal Maximum        : 79.000
+ Upper critical        : 70.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : ucr
+ Settable Thresholds   : ucr
+ Threshold Read Mask   : ucr
+
+Sensor ID              : M2_SSD2 Temp (0x8d)
+ Entity ID             : 7.49 (System Board)
+ Sensor Type (Threshold)  : Temperature (0x01)
+ Sensor Reading        : No Reading
+ Status                : Not Available
+ Nominal Reading       : 20.000
+ Normal Minimum        : 11.000
+ Normal Maximum        : 79.000
+ Upper critical        : 70.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : ucr
+ Settable Thresholds   : ucr
+ Threshold Read Mask   : ucr
+
+Sensor ID              : M2_SSD3 Temp (0x8e)
+ Entity ID             : 7.50 (System Board)
+ Sensor Type (Threshold)  : Temperature (0x01)
+ Sensor Reading        : No Reading
+ Status                : Not Available
+ Nominal Reading       : 20.000
+ Normal Minimum        : 11.000
+ Normal Maximum        : 79.000
+ Upper critical        : 70.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : ucr
+ Settable Thresholds   : ucr
+ Threshold Read Mask   : ucr
+
+Sensor ID              : CPU_FAN1 (0x41)
+ Entity ID             : 29.1 (Fan Device)
+ Sensor Type (Threshold)  : Fan (0x04)
+ Sensor Reading        : 420 (+/- 0) RPM
+ Status                : ok
+ Nominal Reading       : 17920.000
+ Normal Minimum        : 2800.000
+ Normal Maximum        : 23800.000
+ Lower critical        : 140.000
+ Positive Hysteresis   : 140.000
+ Negative Hysteresis   : 140.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr
+ Settable Thresholds   : lcr
+ Threshold Read Mask   : lcr
+ Assertion Events      :
+ Assertions Enabled    : lcr-
+ Deassertions Enabled  : lcr-
+
+Sensor ID              : CPU_FAN2 (0x42)
+ Entity ID             : 29.2 (Fan Device)
+ Sensor Type (Threshold)  : Fan (0x04)
+ Sensor Reading        : 420 (+/- 0) RPM
+ Status                : ok
+ Nominal Reading       : 17920.000
+ Normal Minimum        : 2800.000
+ Normal Maximum        : 23800.000
+ Lower critical        : 140.000
+ Positive Hysteresis   : 140.000
+ Negative Hysteresis   : 140.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr
+ Settable Thresholds   : lcr
+ Threshold Read Mask   : lcr
+ Assertion Events      :
+ Assertions Enabled    : lcr-
+ Deassertions Enabled  : lcr-
+
+Sensor ID              : SYS_FAN1 (0x43)
+ Entity ID             : 29.3 (Fan Device)
+ Sensor Type (Threshold)  : Fan (0x04)
+ Sensor Reading        : 420 (+/- 0) RPM
+ Status                : ok
+ Nominal Reading       : 17920.000
+ Normal Minimum        : 2800.000
+ Normal Maximum        : 23800.000
+ Lower critical        : 140.000
+ Positive Hysteresis   : 140.000
+ Negative Hysteresis   : 140.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr
+ Settable Thresholds   : lcr
+ Threshold Read Mask   : lcr
+ Assertion Events      :
+ Assertions Enabled    : lcr-
+ Deassertions Enabled  : lcr-
+
+Sensor ID              : SYS_FAN2 (0x44)
+ Entity ID             : 29.4 (Fan Device)
+ Sensor Type (Threshold)  : Fan (0x04)
+ Sensor Reading        : 420 (+/- 0) RPM
+ Status                : ok
+ Nominal Reading       : 17920.000
+ Normal Minimum        : 2800.000
+ Normal Maximum        : 23800.000
+ Lower critical        : 140.000
+ Positive Hysteresis   : 140.000
+ Negative Hysteresis   : 140.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr
+ Settable Thresholds   : lcr
+ Threshold Read Mask   : lcr
+ Assertion Events      :
+ Assertions Enabled    : lcr-
+ Deassertions Enabled  : lcr-
+
+Sensor ID              : SYS_FAN3 (0x45)
+ Entity ID             : 29.5 (Fan Device)
+ Sensor Type (Threshold)  : Fan (0x04)
+ Sensor Reading        : 420 (+/- 0) RPM
+ Status                : ok
+ Nominal Reading       : 17920.000
+ Normal Minimum        : 2800.000
+ Normal Maximum        : 23800.000
+ Lower critical        : 140.000
+ Positive Hysteresis   : 140.000
+ Negative Hysteresis   : 140.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr
+ Settable Thresholds   : lcr
+ Threshold Read Mask   : lcr
+ Assertion Events      :
+ Assertions Enabled    : lcr-
+ Deassertions Enabled  : lcr-
+
+Sensor ID              : 12V (0x30)
+ Entity ID             : 7.32 (System Board)
+ Sensor Type (Threshold)  : Voltage (0x02)
+ Sensor Reading        : 12.299 (+/- 0) Volts
+ Status                : ok
+ Nominal Reading       : 12.131
+ Normal Minimum        : 10.871
+ Normal Maximum        : 12.971
+ Upper non-recoverable : 13.391
+ Upper critical        : 13.307
+ Upper non-critical    : 12.971
+ Lower non-recoverable : 10.283
+ Lower critical        : 10.283
+ Lower non-critical    : 10.871
+ Positive Hysteresis   : 0.084
+ Negative Hysteresis   : 0.084
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lnr lcr lnc unc ucr unr
+ Settable Thresholds   : lnr lcr lnc unc ucr unr
+ Threshold Read Mask   : lnr lcr lnc unc ucr unr
+ Assertion Events      :
+ Assertions Enabled    : lcr- lnr- ucr+ unr+
+ Deassertions Enabled  : lcr- lnr- ucr+ unr+
+
+Sensor ID              : 5VCC (0x31)
+ Entity ID             : 7.33 (System Board)
+ Sensor Type (Threshold)  : Voltage (0x02)
+ Sensor Reading        : 5.041 (+/- 0) Volts
+ Status                : ok
+ Nominal Reading       : 4.999
+ Normal Minimum        : 4.493
+ Normal Maximum        : 5.379
+ Upper non-recoverable : 5.590
+ Upper critical        : 5.505
+ Upper non-critical    : 5.379
+ Lower non-recoverable : 4.239
+ Lower critical        : 4.282
+ Lower non-critical    : 4.493
+ Positive Hysteresis   : 0.042
+ Negative Hysteresis   : 0.042
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lnr lcr lnc unc ucr unr
+ Settable Thresholds   : lnr lcr lnc unc ucr unr
+ Threshold Read Mask   : lnr lcr lnc unc ucr unr
+ Assertion Events      :
+ Assertions Enabled    : lcr- lnr- ucr+ unr+
+ Deassertions Enabled  : lcr- lnr- ucr+ unr+
+
+Sensor ID              : 3.3VCC (0x32)
+ Entity ID             : 7.34 (System Board)
+ Sensor Type (Threshold)  : Voltage (0x02)
+ Sensor Reading        : 3.335 (+/- 0) Volts
+ Status                : ok
+ Nominal Reading       : 3.311
+ Normal Minimum        : 2.982
+ Normal Maximum        : 3.570
+ Upper non-recoverable : 3.711
+ Upper critical        : 3.664
+ Upper non-critical    : 3.570
+ Lower non-recoverable : 2.818
+ Lower critical        : 2.841
+ Lower non-critical    : 2.982
+ Positive Hysteresis   : 0.024
+ Negative Hysteresis   : 0.024
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lnr lcr lnc unc ucr unr
+ Settable Thresholds   : lnr lcr lnc unc ucr unr
+ Threshold Read Mask   : lnr lcr lnc unc ucr unr
+ Assertion Events      :
+ Assertions Enabled    : lcr- lnr- ucr+ unr+
+ Deassertions Enabled  : lcr- lnr- ucr+ unr+
+
+Sensor ID              : VBAT (0x33)
+ Entity ID             : 40.0 (Battery)
+ Sensor Type (Discrete): Battery (0x29)
+ Sensor Reading        : 4h
+ Event Message Control : Per-threshold
+ States Asserted       : Battery
+                         [Presence Detected]
+ Assertion Events      : Battery
+                         [Presence Detected]
+ Assertions Enabled    : Battery
+                         [Low]
+                         [Failed]
+ Deassertions Enabled  : Battery
+                         [Low]
+                         [Failed]
+ OEM                   : 0
+
+Sensor ID              : VDD_5_DUAL (0x34)
+ Entity ID             : 7.36 (System Board)
+ Sensor Type (Threshold)  : Voltage (0x02)
+ Sensor Reading        : 4.977 (+/- 0) Volts
+ Status                : ok
+ Nominal Reading       : 4.977
+ Normal Minimum        : 4.472
+ Normal Maximum        : 5.398
+ Upper non-recoverable : 5.567
+ Upper critical        : 5.524
+ Upper non-critical    : 5.398
+ Lower non-recoverable : 4.261
+ Lower critical        : 4.261
+ Lower non-critical    : 4.472
+ Positive Hysteresis   : 0.042
+ Negative Hysteresis   : 0.042
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lnr lcr lnc unc ucr unr
+ Settable Thresholds   : lnr lcr lnc unc ucr unr
+ Threshold Read Mask   : lnr lcr lnc unc ucr unr
+ Assertion Events      :
+ Assertions Enabled    : lcr- lnr- ucr+ unr+
+ Deassertions Enabled  : lcr- lnr- ucr+ unr+
+
+Sensor ID              : VDD_33_DUAL (0x35)
+ Entity ID             : 7.37 (System Board)
+ Sensor Type (Threshold)  : Voltage (0x02)
+ Sensor Reading        : 3.380 (+/- 0) Volts
+ Status                : ok
+ Nominal Reading       : 3.309
+ Normal Minimum        : 2.980
+ Normal Maximum        : 3.568
+ Upper non-recoverable : 3.709
+ Upper critical        : 3.662
+ Upper non-critical    : 3.568
+ Lower non-recoverable : 2.816
+ Lower critical        : 2.839
+ Lower non-critical    : 2.980
+ Positive Hysteresis   : 0.024
+ Negative Hysteresis   : 0.024
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lnr lcr lnc unc ucr unr
+ Settable Thresholds   : lnr lcr lnc unc ucr unr
+ Threshold Read Mask   : lnr lcr lnc unc ucr unr
+ Assertion Events      :
+ Assertions Enabled    : lcr- lnr- ucr+ unr+
+ Deassertions Enabled  : lcr- lnr- ucr+ unr+
+
+Sensor ID              : 1.8V PCH (0x36)
+ Entity ID             : 7.38 (System Board)
+ Sensor Type (Threshold)  : Voltage (0x02)
+ Sensor Reading        : 1.815 (+/- 0) Volts
+ Status                : ok
+ Nominal Reading       : 1.802
+ Normal Minimum        : 1.698
+ Normal Maximum        : 1.945
+ Upper non-recoverable : 1.997
+ Upper critical        : 1.971
+ Upper non-critical    : 1.945
+ Lower non-recoverable : 1.620
+ Lower critical        : 1.646
+ Lower non-critical    : 1.698
+ Positive Hysteresis   : 0.013
+ Negative Hysteresis   : 0.013
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lnr lcr lnc unc ucr unr
+ Settable Thresholds   : lnr lcr lnc unc ucr unr
+ Threshold Read Mask   : lnr lcr lnc unc ucr unr
+ Assertion Events      :
+ Assertions Enabled    : lcr- lnr- ucr+ unr+
+ Deassertions Enabled  : lcr- lnr- ucr+ unr+
+
+Sensor ID              : PVNN PCH (0x37)
+ Entity ID             : 7.39 (System Board)
+ Sensor Type (Threshold)  : Voltage (0x02)
+ Sensor Reading        : 0.842 (+/- 0) Volts
+ Status                : ok
+ Nominal Reading       : 0.832
+ Normal Minimum        : 0.725
+ Normal Maximum        : 0.970
+ Upper non-recoverable : 1.028
+ Upper critical        : 0.999
+ Upper non-critical    : 0.970
+ Lower non-recoverable : 0.646
+ Lower critical        : 0.675
+ Lower non-critical    : 0.725
+ Positive Hysteresis   : 0.010
+ Negative Hysteresis   : 0.010
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lnr lcr lnc unc ucr unr
+ Settable Thresholds   : lnr lcr lnc unc ucr unr
+ Threshold Read Mask   : lnr lcr lnc unc ucr unr
+ Assertion Events      :
+ Assertions Enabled    : lcr- lnr- ucr+ unr+
+ Deassertions Enabled  : lcr- lnr- ucr+ unr+
+
+Sensor ID              : 1.05V PCH (0x38)
+ Entity ID             : 7.40 (System Board)
+ Sensor Type (Threshold)  : Voltage (0x02)
+ Sensor Reading        : 1.031 (+/- 0) Volts
+ Status                : ok
+ Nominal Reading       : 1.050
+ Normal Minimum        : 0.943
+ Normal Maximum        : 1.197
+ Upper non-recoverable : 1.246
+ Upper critical        : 1.227
+ Upper non-critical    : 1.197
+ Lower non-recoverable : 0.864
+ Lower critical        : 0.894
+ Lower non-critical    : 0.943
+ Positive Hysteresis   : 0.010
+ Negative Hysteresis   : 0.010
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lnr lcr lnc unc ucr unr
+ Settable Thresholds   : lnr lcr lnc unc ucr unr
+ Threshold Read Mask   : lnr lcr lnc unc ucr unr
+ Assertion Events      :
+ Assertions Enabled    : lcr- lnr- ucr+ unr+
+ Deassertions Enabled  : lcr- lnr- ucr+ unr+
+
+Sensor ID              : 2.5V BMC (0x39)
+ Entity ID             : 7.41 (System Board)
+ Sensor Type (Threshold)  : Voltage (0x02)
+ Sensor Reading        : 2.513 (+/- 0) Volts
+ Status                : ok
+ Nominal Reading       : 2.513
+ Normal Minimum        : 2.396
+ Normal Maximum        : 2.653
+ Upper non-recoverable : 2.700
+ Upper critical        : 2.653
+ Upper non-critical    : 2.653
+ Lower non-recoverable : 2.302
+ Lower critical        : 2.349
+ Lower non-critical    : 2.396
+ Positive Hysteresis   : 0.023
+ Negative Hysteresis   : 0.023
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lnr lcr lnc unc ucr unr
+ Settable Thresholds   : lnr lcr lnc unc ucr unr
+ Threshold Read Mask   : lnr lcr lnc unc ucr unr
+ Assertion Events      :
+ Assertions Enabled    : lcr- lnr- ucr+ unr+
+ Deassertions Enabled  : lcr- lnr- ucr+ unr+
+
+Sensor ID              : 1.8V BMC (0x3a)
+ Entity ID             : 7.42 (System Board)
+ Sensor Type (Threshold)  : Voltage (0x02)
+ Sensor Reading        : 1.787 (+/- 0) Volts
+ Status                : ok
+ Nominal Reading       : 1.800
+ Normal Minimum        : 1.696
+ Normal Maximum        : 1.943
+ Upper non-recoverable : 1.995
+ Upper critical        : 1.956
+ Upper non-critical    : 1.943
+ Lower non-recoverable : 1.618
+ Lower critical        : 1.644
+ Lower non-critical    : 1.696
+ Positive Hysteresis   : 0.013
+ Negative Hysteresis   : 0.013
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lnr lcr lnc unc ucr unr
+ Settable Thresholds   : lnr lcr lnc unc ucr unr
+ Threshold Read Mask   : lnr lcr lnc unc ucr unr
+ Assertion Events      :
+ Assertions Enabled    : lcr- lnr- ucr+ unr+
+ Deassertions Enabled  : lcr- lnr- ucr+ unr+
+
+Sensor ID              : 1.2V BMC (0x3b)
+ Entity ID             : 7.43 (System Board)
+ Sensor Type (Threshold)  : Voltage (0x02)
+ Sensor Reading        : 1.181 (+/- 0) Volts
+ Status                : ok
+ Nominal Reading       : 1.230
+ Normal Minimum        : 1.093
+ Normal Maximum        : 1.338
+ Upper non-recoverable : 1.387
+ Upper critical        : 1.367
+ Upper non-critical    : 1.338
+ Lower non-recoverable : 1.014
+ Lower critical        : 1.044
+ Lower non-critical    : 1.093
+ Positive Hysteresis   : 0.010
+ Negative Hysteresis   : 0.010
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lnr lcr lnc unc ucr unr
+ Settable Thresholds   : lnr lcr lnc unc ucr unr
+ Threshold Read Mask   : lnr lcr lnc unc ucr unr
+ Assertion Events      :
+ Assertions Enabled    : lcr- lnr- ucr+ unr+
+ Deassertions Enabled  : lcr- lnr- ucr+ unr+
+
+Sensor ID              : 1.0V BMC (0x3c)
+ Entity ID             : 7.44 (System Board)
+ Sensor Type (Threshold)  : Voltage (0x02)
+ Sensor Reading        : 1.007 (+/- 0) Volts
+ Status                : ok
+ Nominal Reading       : 1.017
+ Normal Minimum        : 0.889
+ Normal Maximum        : 1.154
+ Upper non-recoverable : 1.193
+ Upper critical        : 1.164
+ Upper non-critical    : 1.154
+ Lower non-recoverable : 0.821
+ Lower critical        : 0.840
+ Lower non-critical    : 0.889
+ Positive Hysteresis   : 0.010
+ Negative Hysteresis   : 0.010
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lnr lcr lnc unc ucr unr
+ Settable Thresholds   : lnr lcr lnc unc ucr unr
+ Threshold Read Mask   : lnr lcr lnc unc ucr unr
+ Assertion Events      :
+ Assertions Enabled    : lcr- lnr- ucr+ unr+
+ Deassertions Enabled  : lcr- lnr- ucr+ unr+
+
+Sensor ID              : VDimmAB (0x3d)
+ Entity ID             : 7.45 (System Board)
+ Sensor Type (Threshold)  : Voltage (0x02)
+ Sensor Reading        : No Reading
+ Status                : Not Available
+ Nominal Reading       : 1.114
+ Normal Minimum        : 1.006
+ Normal Maximum        : 1.252
+ Upper non-recoverable : 1.300
+ Upper critical        : 1.281
+ Upper non-critical    : 1.252
+ Lower non-recoverable : 0.928
+ Lower critical        : 0.948
+ Lower non-critical    : 1.006
+ Positive Hysteresis   : 0.010
+ Negative Hysteresis   : 0.010
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lnr lcr lnc unc ucr unr
+ Settable Thresholds   : lnr lcr lnc unc ucr unr
+ Threshold Read Mask   : lnr lcr lnc unc ucr unr
+
+Sensor ID              : P_VCCIN_AUX_CPU (0x3e)
+ Entity ID             : 7.46 (System Board)
+ Sensor Type (Threshold)  : Voltage (0x02)
+ Sensor Reading        : 1.788 (+/- 0) Volts
+ Status                : ok
+ Nominal Reading       : 1.797
+ Normal Minimum        : 1.690
+ Normal Maximum        : 1.954
+ Upper non-recoverable : 2.003
+ Upper critical        : 1.964
+ Upper non-critical    : 1.954
+ Lower non-recoverable : 1.621
+ Lower critical        : 1.641
+ Lower non-critical    : 1.690
+ Positive Hysteresis   : 0.010
+ Negative Hysteresis   : 0.010
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lnr lcr lnc unc ucr unr
+ Settable Thresholds   : lnr lcr lnc unc ucr unr
+ Threshold Read Mask   : lnr lcr lnc unc ucr unr
+ Assertion Events      :
+ Assertions Enabled    : lcr- lnr- ucr+ unr+
+ Deassertions Enabled  : lcr- lnr- ucr+ unr+
+
+Sensor ID              : 1.05V CPU (0x3f)
+ Entity ID             : 7.47 (System Board)
+ Sensor Type (Threshold)  : Voltage (0x02)
+ Sensor Reading        : 1.039 (+/- 0) Volts
+ Status                : ok
+ Nominal Reading       : 1.059
+ Normal Minimum        : 0.922
+ Normal Maximum        : 1.186
+ Upper non-recoverable : 1.226
+ Upper critical        : 1.206
+ Upper non-critical    : 1.186
+ Lower non-recoverable : 0.853
+ Lower critical        : 0.883
+ Lower non-critical    : 0.922
+ Positive Hysteresis   : 0.010
+ Negative Hysteresis   : 0.010
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lnr lcr lnc unc ucr unr
+ Settable Thresholds   : lnr lcr lnc unc ucr unr
+ Threshold Read Mask   : lnr lcr lnc unc ucr unr
+ Assertion Events      :
+ Assertions Enabled    : lcr- lnr- ucr+ unr+
+ Deassertions Enabled  : lcr- lnr- ucr+ unr+
+
+Sensor ID              : Chassis Intru (0xaa)
+ Entity ID             : 23.0 (System Chassis)
+ Sensor Type (Discrete): Physical Security (0x05)
+ Sensor Reading        : 0h
+ Event Message Control : Per-threshold
+ Assertions Enabled    : Physical Security
+                         [General Chassis intrusion]
+                         [I/O Card area intrusion]
+                         [System unplugged from LAN]
+ Deassertions Enabled  : Physical Security
+                         [General Chassis intrusion]
+                         [I/O Card area intrusion]
+                         [System unplugged from LAN]
+ OEM                   : 0
