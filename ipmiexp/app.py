@@ -4,6 +4,7 @@
 #
 from typing import List
 from textual.app import App, ComposeResult
+from textual.coordinate import Coordinate
 from textual.widgets import Header, Footer
 from textual.containers import HorizontalGroup, VerticalScroll, ScrollableContainer
 from textual.widgets import Button, ContentSwitcher, DataTable, Label
@@ -110,6 +111,7 @@ class IpmiExpApp(App):
         self.read_data()
         table = self.query_one("#sensors_page", DataTable)
         #table.add_columns("ID", "Name", "Location", "Reading", "Unit", "LNR", "LCR", "LNC", "UNC", "UCR", "UNR")
+        row=0
         for r in self.sensors:
             if r.has_reading:
                 if r.has_unit:
@@ -151,13 +153,14 @@ class IpmiExpApp(App):
                     lnc = IpmiSensor.NO_VALUE
             else:
                 unr = ucr = unc = lnr = lcr = lnc = IpmiSensor.NO_VALUE
-            table.update_cell(f"0x{r.id:x}", "Reading", value)
-            table.update_cell(f"0x{r.id:x}", "LNR", lnr)
-            table.update_cell(f"0x{r.id:x}", "LCR", lcr)
-            table.update_cell(f"0x{r.id:x}", "LNC", lnc)
-            table.update_cell(f"0x{r.id:x}", "UNC", unc)
-            table.update_cell(f"0x{r.id:x}", "UCR", ucr)
-            table.update_cell(f"0x{r.id:x}", "UNR", unr)
+            table.update_cell_at(Coordinate(3, row), value)
+            table.update_cell_at(Coordinate(5, row), lnr)
+            table.update_cell_at(Coordinate(6, row), lcr)
+            table.update_cell_at(Coordinate(7, row), lnc)
+            table.update_cell_at(Coordinate(8, row), unc)
+            table.update_cell_at(Coordinate(9, row), ucr)
+            table.update_cell_at(Coordinate(10, row), unr)
+            row+=1
             #table.add_row(f"0x{r.id:x}", r.name, r.location, value, unit, lnr, lcr, lnc, unc, ucr, unr,
             #              key=f"0x{r.id:x}")
 
