@@ -2,10 +2,11 @@
 #   ipmi.py (C) 2025, Peter Sulyok
 #   ipmiexp package: ModalWindow() class implementation.
 #
+from docutils.io import Input
 from textual.app import ComposeResult
 from textual.screen import ModalScreen
 from textual.containers import Container, Horizontal
-from textual.widgets import Label, Button, RadioButton, RadioSet
+from textual.widgets import Label, Button, RadioButton, RadioSet, Input
 from ipmiexp import Ipmi
 
 class ModalWindow(ModalScreen):
@@ -132,5 +133,65 @@ class SetFanModeWindow(ModalScreen):
         rs = self.query_one(RadioSet)
         rs._selected = self.mode
         rs.focus()
+
+class SetLevelWindow(ModalScreen):
+    """A modal pop-up window for setting new fan level."""
+
+    DEFAULT_CSS = """
+    SetLevelWindow {
+        align: center middle;
+    }
+
+    SetLevelWindow > Container {
+        width: auto;
+        height: auto;
+        border: thick $background 80%;
+        background: $surface;
+    }
+
+    SetLevelWindow > Container > Label {
+        width: 100%;
+        content-align-horizontal: center;
+        margin-top: 1;
+    }
+
+    SetLevelWindow > Container > Input {
+        width: 100%;
+        content-align-horizontal: center;
+        margin-top: 1;
+    }
+
+    SetLevelWindow > Container > Horizontal {
+        width: auto;
+        height: auto;
+    }
+
+    SetLevelWindow > Container > Horizontal > Button {
+        margin: 2 4;
+    }
+    """
+    zone: int
+
+    def __init__(self, zone: int):
+        self.zone = zone
+        super().__init__()
+
+    def compose(self) -> ComposeResult:
+        with Container():
+            yield Label(f'Enter the new level for zone {self.zone}:')
+            yield Input(placeholder="level (0-100)", type="integer")
+            with Horizontal():
+                yield Button("Set level", id="set_level", variant="success")
+                yield Button("Cancel", id="_cancel", variant="error")
+
+    def on_button_pressed(self, event):
+        result = -1
+        if event.button.id == "set_level":
+            result = int(self.query_one(Input).value)
+        self.dismiss(result)
+
+    def on_mount(self) -> None:
+        l = self.query_one(Label)
+        l.focus()
 
 # End.

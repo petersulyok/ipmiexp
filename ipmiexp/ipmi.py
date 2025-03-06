@@ -113,9 +113,9 @@ class Ipmi:
             r = subprocess.run([self.command, 'raw', '0x30', '0x45', '0x00'],
                                check=False, capture_output=True, text=True)
             if r.returncode != 0:
-                raise RuntimeError(r.stderr)
+                raise RuntimeError(f'ipmitool error ({r.returncode}): {r.stderr}')
             m = int(r.stdout)
-        except (FileNotFoundError, ValueError) as e:
+        except (FileNotFoundError, RuntimeError, ValueError) as e:
             raise e
         return m
 
@@ -146,16 +146,20 @@ class Ipmi:
         """Set the IPMI fan mode.
 
         Args:
-            mode (int): fan mode (STANDARD_MODE, FULL_MODE, OPTIMAL_MODE, HEAVY_IO_MODE)
+            mode (int): fan mode (STANDARD_MODE, FULL_MODE, OPTIMAL_MODE, PUE_MODE, HEAVY_IO_MODE)
         """
+        r: subprocess.CompletedProcess  # result of the executed process
+
         # Validate mode parameter.
         if mode not in {self.STANDARD_MODE, self.FULL_MODE, self.OPTIMAL_MODE, self.PUE_MODE, self.HEAVY_IO_MODE}:
             raise ValueError(f'Invalid fan mode value ({mode}).')
         # Call ipmitool command and set the new IPMI fan mode.
         try:
-            subprocess.run([self.command, 'raw', '0x30', '0x45', '0x01', str(mode)],
-                           check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        except FileNotFoundError as e:
+            r = subprocess.run([self.command, 'raw', '0x30', '0x45', '0x01', str(mode)],
+                               check=False, capture_output=True, text=True)
+            if r.returncode != 0:
+                raise RuntimeError(f'ipmitool error ({r.returncode}): {r.stderr}')
+        except (FileNotFoundError, RuntimeError) as e:
             raise e
         # Give time for IPMI system/fans to apply changes in the new fan mode.
         time.sleep(self.fan_mode_delay)
@@ -167,6 +171,8 @@ class Ipmi:
             zone (int): fan zone (CPU_ZONE, HD_ZONE)
             level (int): fan level in % (0-100)
         """
+        r: subprocess.CompletedProcess  # result of the executed process
+
         # Validate zone parameter
         if zone < 0:
             raise ValueError(f'Negative zone value ({zone}).')
@@ -175,9 +181,11 @@ class Ipmi:
             raise ValueError(f'Invalid level value ({level}).')
         # Set the new IPMI fan level in the specific zone
         try:
-            subprocess.run([self.command, 'raw', '0x30', '0x70', '0x66', '0x01', str(zone), str(level)],
-                           check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        except FileNotFoundError as e:
+            r = subprocess.run([self.command, 'raw', '0x30', '0x70', '0x66', '0x01', str(zone), str(level)],
+                           check=False, capture_output=True, text=True)
+            if r.returncode != 0:
+                raise RuntimeError(f'ipmitool error ({r.returncode}): {r.stderr}')
+        except (FileNotFoundError, RuntimeError) as e:
             raise e
         # Give time for IPMI and fans to spin up/down.
         time.sleep(self.fan_level_delay)
@@ -201,9 +209,9 @@ class Ipmi:
             r = subprocess.run([self.command, 'raw', '0x30', '0x70', '0x66', '0x00', str(zone)],
                                check=False, capture_output=True, text=True)
             if r.returncode != 0:
-                raise RuntimeError(r.stderr)
+                raise RuntimeError(f'ipmitool error ({r.returncode}): {r.stderr}')
             l = int(r.stdout, 16)
-        except (FileNotFoundError, ValueError) as e:
+        except (FileNotFoundError, RuntimeError, ValueError) as e:
             raise e
         return l
 
@@ -221,7 +229,7 @@ class Ipmi:
             if r.returncode != 0:
                 raise RuntimeError(f'ipmitool error ({r.returncode}): {r.stderr}')
             output_lines = r.stdout.splitlines()
-        except FileNotFoundError as e:
+        except (FileNotFoundError, RuntimeError) as e:
             raise e
 
         # Parsing loop of the output.
@@ -453,11 +461,7 @@ class Ipmi:
         return result
 
     def read_events(self) -> str:
-        """Read IPMI events.
-
-        Args:
-            zone (int): fan zone (CPU_ZONE, HD_ZONE)
-            level (int): fan level in % (0-100)
+        """Read list of IPMI events.
         """
         r: subprocess.CompletedProcess  # result of the executed process
 
@@ -465,10 +469,10 @@ class Ipmi:
         try:
             r = subprocess.run([self.command, 'sel', 'list'],
                            check=False, capture_output=True, text=True)
-        except FileNotFoundError as e:
+            if r.returncode != 0:
+                raise RuntimeError(f'ipmitool error ({r.returncode}): {r.stderr}')
+        except (FileNotFoundError, RuntimeError) as e:
             raise e
-        if r.returncode != 0:
-            raise RuntimeError(f'ipmitool error ({r.returncode}): {r.stderr}')
         return r.stdout
 
 # End.

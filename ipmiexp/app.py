@@ -11,8 +11,7 @@ from textual.widgets import Button, ContentSwitcher, DataTable, Label
 
 from ipmiexp.config import Config
 from ipmiexp.ipmi import Ipmi, IpmiSensor, IpmiZone
-from ipmiexp.modal import SetFanModeWindow
-
+from ipmiexp.modal import SetFanModeWindow, SetLevelWindow
 
 class IpmiExpApp(App):
 
@@ -104,10 +103,20 @@ class IpmiExpApp(App):
             print("Threshold.")
 
     def action_set_zone_level(self) -> None:
-        if self.query_one(ContentSwitcher).current == "fans_page":
-            print("Level.")
+
+        def save_new_level(result: int) -> None:
+            zone = self.query_one("#zones_table", DataTable).cursor_row
+            self.ipmi.set_fan_level(zone, result)
+            result = self.ipmi.get_fan_level(zone)
+            table = self.query_one("#zones_table", DataTable)
+            table.update_cell_at(Coordinate(zone, 2), result, update_width=True)
+
+        table = self.query_one("#zones_table", DataTable)
+        self.push_screen(SetLevelWindow(table.cursor_row), save_new_level)
 
     def action_refresh(self) -> None:
+        """Re-read data and refresh the display."""
+
         # Re-read data from IPMI.
         self.read_data()
 
@@ -117,17 +126,14 @@ class IpmiExpApp(App):
         for r in self.sensors:
             if r.has_reading:
                 if r.has_unit:
-                    unit = r.unit
                     if r.type_id == IpmiSensor.TYPE_VOLTAGE:
                         value = f'{r.reading:.3f}'
                     else:
                         value = f'{r.reading}'
                 else:
                     value = f'0x{r.reading:02x}'
-                    unit = ''
             else:
                 value = IpmiSensor.NO_VALUE
-                unit = IpmiSensor.EMPTY_VALUE
             if r.has_reading and r.has_threshold:
                 if r.has_unr:
                     unr = f'{r.unr:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.unr}'
@@ -178,8 +184,8 @@ class IpmiExpApp(App):
             row += 1
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-
-        def save_new_fan_mode(result: int):
+        """All button pressed event processed here."""
+        def save_new_fan_mode(result: int) -> None:
             if result != -1 and result != self.fan_mode:
                 self.ipmi.set_fan_mode(result)
                 self.fan_mode = self.ipmi.get_fan_mode()

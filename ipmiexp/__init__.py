@@ -4,10 +4,10 @@
 #
 from ipmiexp.config import Config
 from ipmiexp.ipmi import Ipmi, IpmiSensor, IpmiZone
-from ipmiexp.modal import ModalWindow, SetFanModeWindow
+from ipmiexp.modal import ModalWindow, SetFanModeWindow, SetLevelWindow
 from ipmiexp.app import IpmiExpApp
 from ipmiexp.cmd import main
 
-__all__ = ['Config', 'Ipmi', 'IpmiSensor', 'IpmiZone', "ModalWindow", "SetFanModeWindow", 'IpmiExpApp', 'main']
+__all__ = ['Config', 'Ipmi', 'IpmiSensor', 'IpmiZone', "ModalWindow", "SetFanModeWindow", 'SetLevelWindow', 'IpmiExpApp', 'main']
 
 # End.
