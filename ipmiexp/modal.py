@@ -186,8 +186,9 @@ class SetLevelWindow(ModalScreen):
 
     def on_button_pressed(self, event):
         result = -1
-        if event.button.id == "set_level":
-            result = int(self.query_one(Input).value)
+        s = self.query_one(Input).value
+        if event.button.id == "set_level" and s:
+            result = int(s)
         self.dismiss(result)
 
     def on_mount(self) -> None:

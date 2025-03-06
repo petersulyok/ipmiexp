@@ -105,11 +105,12 @@ class IpmiExpApp(App):
     def action_set_zone_level(self) -> None:
 
         def save_new_level(result: int) -> None:
-            zone = self.query_one("#zones_table", DataTable).cursor_row
-            self.ipmi.set_fan_level(zone, result)
-            result = self.ipmi.get_fan_level(zone)
-            table = self.query_one("#zones_table", DataTable)
-            table.update_cell_at(Coordinate(zone, 2), result, update_width=True)
+            if result in range(0, 100):
+                zone = self.query_one("#zones_table", DataTable).cursor_row
+                self.ipmi.set_fan_level(zone, result)
+                result = self.ipmi.get_fan_level(zone)
+                table = self.query_one("#zones_table", DataTable)
+                table.update_cell_at(Coordinate(zone, 2), result, update_width=True)
 
         table = self.query_one("#zones_table", DataTable)
         self.push_screen(SetLevelWindow(table.cursor_row), save_new_level)
