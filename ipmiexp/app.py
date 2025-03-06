@@ -108,9 +108,11 @@ class IpmiExpApp(App):
             print("Level.")
 
     def action_refresh(self) -> None:
+        # Re-read data from IPMI.
         self.read_data()
+
+        # Update table on "Sensors" page.
         table = self.query_one("#sensors_page", DataTable)
-        #table.add_columns("ID", "Name", "Location", "Reading", "Unit", "LNR", "LCR", "LNC", "UNC", "UCR", "UNR")
         row=0
         for r in self.sensors:
             if r.has_reading:
@@ -161,11 +163,19 @@ class IpmiExpApp(App):
             table.update_cell_at(Coordinate(row, 9), ucr)
             table.update_cell_at(Coordinate(row, 10), unr)
             row+=1
-            #table.add_row(f"0x{r.id:x}", r.name, r.location, value, unit, lnr, lcr, lnc, unc, ucr, unr,
-            #              key=f"0x{r.id:x}")
 
-
-
+        # Update tables on "Fans" page.
+        table = self.query_one("#fans_table", DataTable)
+        row = 0
+        for r in self.sensors:
+            if r.type_id == IpmiSensor.TYPE_FAN:
+                table.update_cell_at(Coordinate(row, 2), r.reading if r.has_reading else IpmiSensor.NO_VALUE)
+                row += 1
+        row = 0
+        table = self.query_one("#zones_table", DataTable)
+        for z in self.zones:
+            table.update_cell_at(Coordinate(row, 2), z.level)
+            row += 1
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
 
