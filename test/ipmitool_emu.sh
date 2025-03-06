@@ -56,6 +56,11 @@ if [[ $1 = "raw" && $2 = "0x30" && $3 = "0x45" && $4 = "0x01" ]] ; then
             done
             ;;
         "3")
+            # Randomly this mode will generate an error.
+            if [[ $(($RANDOM % 2)) -eq 1 ]]; then
+                >&2 echo "Unable to send RAW command (channel=0x0 netfn=0x30 lun=0x0 cmd=0x45 rsp=0xcc): Invalid data field in request"
+                exit 1
+            fi
             # PUE mode: level 30% in all zones.
             for i in $(seq 0 7); do
                 echo "1e" > "$tmp_dir/zone$i"
@@ -102,7 +107,14 @@ fi
 # IPMI read sensors.
 if [[ $1 = "-v" && $2 = "sdr" ]] ; then
     curdir=$(dirname "$0")
-    cat "$curdir/ipmitool_sdr_v.txt"
+    cat "$curdir/ipmitool_v_sdr_2600.txt"
+    exit 0
+fi
+
+# IPMI read events.
+if [[ $1 = "sel" && $2 = "list" ]] ; then
+    curdir=$(dirname "$0")
+    cat "$curdir/ipmitool_sel_list.txt"
     exit 0
 fi
 
