@@ -17,6 +17,9 @@ class IpmiSensor:
     TYPE_PHYSICAL_SECURITY: int = 0x05
     TYPE_BATTERY = 0x29
 
+    NO_VALUE: str = "-"
+    EMPTY_VALUE: str = ""
+
     name: str                   # Sensor name.
     id: int                     # Sensor ID.
     entity_id: str              # Sensor entity ID.
@@ -30,11 +33,17 @@ class IpmiSensor:
     unit: str                   # Sensor reading unit.
     has_status: bool            # Sensor has status.
     status: str                 # Sensor status.
+    has_unr:bool                # Sensor has non-recoverable threshold.
     unr: Union[float, int]      # Sensor upper non-recoverable threshold.
+    has_ucr: bool               # Sensor has upper critical threshold.
     ucr: Union[float, int]      # Sensor upper critical threshold.
+    has_unc: bool               # Sensor upper has non-critical threshold.
     unc: Union[float, int]      # Sensor upper non-critical threshold.
+    has_lnr: bool               # Sensor has lower non-recoverable threshold.
     lnr: Union[float, int]      # Sensor lower non-recoverable threshold.
+    has_lcr: Union[float, int]  # Sensor has lower critical threshold.
     lcr: Union[float, int]      # Sensor lower critical threshold.
+    has_lnc: Union[float, int]  # Sensor has lower non-critical threshold.
     lnc: Union[float, int]      # Sensor lower non-critical threshold.
 
 
@@ -210,7 +219,7 @@ class Ipmi:
             r = subprocess.run([self.command, '-v', 'sdr'],
                                check=False, capture_output=True, text=True)
             if r.returncode != 0:
-                raise RuntimeError(f'ipmitool error ({r.returncode}).Stderr: {r.stderr}')
+                raise RuntimeError(f'ipmitool error ({r.returncode}): {r.stderr}')
             output_lines = r.stdout.splitlines()
         except FileNotFoundError as e:
             raise e
@@ -229,6 +238,12 @@ class Ipmi:
                 s.has_reading = False
                 s.has_unit = False
                 s.has_status = False
+                s.has_unr = False
+                s.has_ucr = False
+                s.has_unc = False
+                s.has_lnr = False
+                s.has_lcr = False
+                s.has_lnc = False
 
                 # Read the 'Sensor ID' line.
                 # https://docs.python.org/3/library/re.html
@@ -269,7 +284,7 @@ class Ipmi:
                 # Read the 'Sensor Reading' line.
                 m = re.match(r'^\s+Sensor Reading\s+:\s*No Reading\s*$', output_lines[n])
                 if m is None:
-                    s.has_reading = True;
+                    s.has_reading = True
 
                     # Try to read the simple form (e.g. 'Sensor Reading        : 4h')
                     m = re.match(r'^\s+Sensor Reading\s+:\s*(?P<reading>\S+)h\s*$', output_lines[n])
@@ -297,7 +312,7 @@ class Ipmi:
                             raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
 
                 # Parsing the remaining lines in the sensor block.
-                while output_lines[n]:
+                while n < len(output_lines) and output_lines[n]:
 
                     # Read the 'Status' line.
                     if s.has_threshold and 'Status' in output_lines[n]:
@@ -322,6 +337,7 @@ class Ipmi:
                                     s.unr = int(float(m['threshold']))
                             except ValueError as e:
                                 raise e
+                            s.has_unr = True
                         else:
                             raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
 
@@ -336,6 +352,7 @@ class Ipmi:
                                     s.ucr = int(float(m['threshold']))
                             except ValueError as e:
                                 raise e
+                            s.has_ucr = True
                         else:
                             raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
 
@@ -350,6 +367,7 @@ class Ipmi:
                                     s.unc = int(float(m['threshold']))
                             except ValueError as e:
                                 raise e
+                            s.has_unc = True
                         else:
                             raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
 
@@ -364,6 +382,7 @@ class Ipmi:
                                     s.lnr = int(float(m['threshold']))
                             except ValueError as e:
                                 raise e
+                            s.has_lnr = True
                         else:
                             raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
 
@@ -378,6 +397,7 @@ class Ipmi:
                                     s.lcr = int(float(m['threshold']))
                             except ValueError as e:
                                 raise e
+                            s.has_lcr = True
                         else:
                             raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
 
@@ -392,6 +412,7 @@ class Ipmi:
                                     s.lnc = int(float(m['threshold']))
                             except ValueError as e:
                                 raise e
+                            s.has_lnc = True
                         else:
                             raise RuntimeError(f'ipmitool parsing error ({output_lines[n]})')
 
@@ -404,6 +425,7 @@ class Ipmi:
             # Otherwise move to the next line.
             else:
                 n+=1
+
         return result
 
     def read_zones(self) -> List[IpmiZone]:
@@ -429,4 +451,24 @@ class Ipmi:
             result.append(z)
 
         return result
+
+    def read_events(self) -> List[str]:
+        """Read IPMI events.
+
+        Args:
+            zone (int): fan zone (CPU_ZONE, HD_ZONE)
+            level (int): fan level in % (0-100)
+        """
+        r: subprocess.CompletedProcess  # result of the executed process
+
+        # Validate zone parameter
+        try:
+            r = subprocess.run([self.command, 'sel', 'list'],
+                           check=False, capture_output=True, text=True)
+        except FileNotFoundError as e:
+            raise e
+        if r.returncode != 0:
+            raise RuntimeError(f'ipmitool error ({r.returncode}): {r.stderr}')
+        return r.stdout
+
 # End.
