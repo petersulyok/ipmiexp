@@ -155,13 +155,13 @@ class IpmiExpApp(App):
                     lnc = IpmiSensor.NO_VALUE
             else:
                 unr = ucr = unc = lnr = lcr = lnc = IpmiSensor.NO_VALUE
-            table.update_cell_at(Coordinate(row, 3), value)
-            table.update_cell_at(Coordinate(row, 5), lnr)
-            table.update_cell_at(Coordinate(row, 6), lcr)
-            table.update_cell_at(Coordinate(row, 7), lnc)
-            table.update_cell_at(Coordinate(row, 8), unc)
-            table.update_cell_at(Coordinate(row, 9), ucr)
-            table.update_cell_at(Coordinate(row, 10), unr)
+            table.update_cell_at(Coordinate(row, 3), value, update_width=True)
+            table.update_cell_at(Coordinate(row, 5), lnr, update_width=True)
+            table.update_cell_at(Coordinate(row, 6), lcr, update_width=True)
+            table.update_cell_at(Coordinate(row, 7), lnc, update_width=True)
+            table.update_cell_at(Coordinate(row, 8), unc, update_width=True)
+            table.update_cell_at(Coordinate(row, 9), ucr, update_width=True)
+            table.update_cell_at(Coordinate(row, 10), unr, update_width=True)
             row+=1
 
         # Update tables on "Fans" page.
@@ -169,12 +169,12 @@ class IpmiExpApp(App):
         row = 0
         for r in self.sensors:
             if r.type_id == IpmiSensor.TYPE_FAN:
-                table.update_cell_at(Coordinate(row, 2), r.reading if r.has_reading else IpmiSensor.NO_VALUE)
+                table.update_cell_at(Coordinate(row, 2), r.reading if r.has_reading else IpmiSensor.NO_VALUE, update_width=True)
                 row += 1
         row = 0
         table = self.query_one("#zones_table", DataTable)
         for z in self.zones:
-            table.update_cell_at(Coordinate(row, 2), z.level)
+            table.update_cell_at(Coordinate(row, 2), z.level, update_width=True)
             row += 1
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
