@@ -483,7 +483,7 @@ class Ipmi:
 
         # Validate zone parameter
         try:
-            args = [self.command, 'sensor', 'thresh', f'"{name}"', 'lower']
+            args = [self.command, 'sensor', 'thresh', name, 'lower']
             args += lower
             r = subprocess.run(args, check=False, capture_output=True, text=True)
             if r.returncode != 0:
@@ -499,7 +499,7 @@ class Ipmi:
 
         # Validate zone parameter
         try:
-            args = [self.command, 'sensor', 'thresh', f'"{name}"', 'upper']
+            args = [self.command, 'sensor', 'thresh', name, 'upper']
             args += upper
             r = subprocess.run(args, check=False, capture_output=True, text=True)
             if r.returncode != 0:
