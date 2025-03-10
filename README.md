@@ -22,7 +22,7 @@ ipmiexp
 ```
 
 ## Further notes
-- This program is using 'ipmitool'
+- This program is using `ipmitool` 
 - Must be executed with root privileges
 - Default configuration file is stored at `~/.config/ipmiexp/setting.ini`
 - You can exit from the program with pressing CTRL-Q
