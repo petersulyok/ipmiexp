@@ -2,7 +2,7 @@
 #   app.py (C) 2025, Peter Sulyok
 #   ipmiexp package: IpmiExpApp() class implementation.
 #
-from typing import List
+from typing import List, Union
 from textual.app import App, ComposeResult
 from textual.coordinate import Coordinate
 from textual.widgets import Header, Footer
@@ -11,7 +11,8 @@ from textual.widgets import Button, ContentSwitcher, DataTable, Label
 
 from ipmiexp.config import Config
 from ipmiexp.ipmi import Ipmi, IpmiSensor, IpmiZone
-from ipmiexp.modal import SetFanModeWindow, SetLevelWindow
+from ipmiexp.modal import SetFanModeWindow, SetLevelWindow, SetThresholdWindow
+
 
 class IpmiExpApp(App):
 
@@ -54,7 +55,6 @@ class IpmiExpApp(App):
         background: $secondary;
     }
     """
-
 
     def __init__(self, config_file: str) -> None:
         """"""
@@ -99,8 +99,44 @@ class IpmiExpApp(App):
                 yield Label("Settings")
 
     def action_set_threshold(self) -> None:
+
+        def save_threshold(result: List[Union[float, int]]) -> None:
+            if len(result):
+                print(result)
+                table = self.query_one("#sensors_page", DataTable)
+                sensor = self.sensors[table.cursor_row]
+                lower = []
+                upper = []
+                is_float = bool(sensor.type_id == IpmiSensor.TYPE_VOLTAGE)
+                n = 0
+                if sensor.has_lnr:
+                    lower.append(f'{result[n]:.3f}' if is_float else f'{result[n]}')
+                    n+=1
+                if sensor.has_lcr:
+                    lower.append(f'{result[n]:.3f}' if is_float else f'{result[n]}')
+                    n += 1
+                if sensor.has_lnc:
+                    lower.append(f'{result[n]:.3f}' if is_float else f'{result[n]}')
+                    n += 1
+                if sensor.has_unc:
+                    upper.append(f'{result[n]:.3f}' if is_float else f'{result[n]}')
+                    n += 1
+                if sensor.has_ucr:
+                    upper.append(f'{result[n]:.3f}' if is_float else f'{result[n]}')
+                    n += 1
+                if sensor.has_unr:
+                    upper.append(f'{result[n]:.3f}' if is_float else f'{result[n]}')
+                    n += 1
+                if len(lower):
+                    self.ipmi.set_lower_threshold(sensor.name, lower)
+                if len(upper):
+                    self.ipmi.set_upper_threshold(sensor.name, upper)
+
         if self.query_one(ContentSwitcher).current == "sensors_page":
-            print("Threshold.")
+            table = self.query_one("#sensors_page", DataTable)
+            sensor=self.sensors[table.cursor_row]
+            if sensor.has_reading and sensor.has_threshold:
+                self.push_screen(SetThresholdWindow(sensor), save_threshold)
 
     def action_set_zone_level(self) -> None:
 
@@ -144,7 +180,7 @@ class IpmiExpApp(App):
                     ucr = f'{r.ucr:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.ucr}'
                 else:
                     ucr = IpmiSensor.NO_VALUE
-                if r.has_unr:
+                if r.has_unc:
                     unc = f'{r.unc:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.unc}'
                 else:
                     unc = IpmiSensor.NO_VALUE
@@ -186,6 +222,7 @@ class IpmiExpApp(App):
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """All button pressed event processed here."""
+
         def save_new_fan_mode(result: int) -> None:
             if result != -1 and result != self.fan_mode:
                 self.ipmi.set_fan_mode(result)
