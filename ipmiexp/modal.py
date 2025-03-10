@@ -76,6 +76,7 @@ class SetFanModeWindow(ModalScreen):
         height: auto;
         border: thick $background 80%;
         background: $surface;
+        padding: 1;
     }
 
     SetFanModeWindow > Container > Label {
@@ -147,6 +148,7 @@ class SetLevelWindow(ModalScreen):
         height: auto;
         border: thick $background 80%;
         background: $surface;
+        padding: 1;
     }
 
     SetLevelWindow > Container > Label {
@@ -159,6 +161,8 @@ class SetLevelWindow(ModalScreen):
         width: 100%;
         content-align-horizontal: center;
         margin-top: 1;
+        margin-left: 3;
+        margin-right: 3;  
     }
 
     SetLevelWindow > Container > Horizontal {
@@ -167,7 +171,7 @@ class SetLevelWindow(ModalScreen):
     }
 
     SetLevelWindow > Container > Horizontal > Button {
-        margin: 2 4;
+        margin: 1 4;
     }
     """
     zone: IpmiZone
