@@ -475,4 +475,37 @@ class Ipmi:
             raise e
         return r.stdout
 
+    def set_lower_threshold(self, name: str, lower: List[str]) -> None:
+        """Set lower threshold values for the specific sensor.
+        """
+        r: subprocess.CompletedProcess  # result of the executed process
+        args: List[str]                 # Command line arguments
+
+        # Validate zone parameter
+        try:
+            args = [self.command, 'sensor', 'thresh', f'"{name}"', 'lower']
+            args += lower
+            r = subprocess.run(args, check=False, capture_output=True, text=True)
+            if r.returncode != 0:
+                raise RuntimeError(f'ipmitool error ({r.returncode}): {r.stderr}')
+        except (FileNotFoundError, RuntimeError) as e:
+            raise e
+
+    def set_upper_threshold(self, name: str, upper: List[str]) -> None:
+        """Set upper threshold values for the specific sensor.
+        """
+        r: subprocess.CompletedProcess  # result of the executed process
+        args: List[str]                 # Command line arguments
+
+        # Validate zone parameter
+        try:
+            args = [self.command, 'sensor', 'thresh', f'"{name}"', 'upper']
+            args += upper
+            r = subprocess.run(args, check=False, capture_output=True, text=True)
+            if r.returncode != 0:
+                raise RuntimeError(f'ipmitool error ({r.returncode}): {r.stderr}')
+        except (FileNotFoundError, RuntimeError) as e:
+            raise e
+
+
 # End.

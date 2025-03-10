@@ -107,7 +107,7 @@ fi
 # IPMI read sensors.
 if [[ $1 = "-v" && $2 = "sdr" ]] ; then
     curdir=$(dirname "$0")
-    cat "$curdir/ipmitool_v_sdr_2600.txt"
+    cat "$curdir/ipmitool_v_sdr_2500.txt"
     exit 0
 fi
 
@@ -117,6 +117,12 @@ if [[ $1 = "sel" && $2 = "list" ]] ; then
     cat "$curdir/ipmitool_sel_list.txt"
     exit 0
 fi
+
+# IPMI set sensor threshold.
+if [[ $1 = "sensor" && $2 = "thresh" ]] ; then
+    exit 0
+fi
+
 
 # Unknown command.
 exit 1
