@@ -28,7 +28,7 @@ fan_level_delay=2
 # IPMI parameters for remote access (HOST is the BMC network address).
 #remote_parameters=-U USERNAME -P PASSWORD -H HOST
 
-[Zones]
+[Zone names]
 0=CPU zone
 1=Peripheral zone
 2=Zone 2
