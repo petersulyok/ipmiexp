@@ -61,6 +61,7 @@ class Ipmi:
     command: str                        # Full path for ipmitool command.
     fan_mode_delay: float               # Delay time after execution of IPMI set fan mode function
     fan_level_delay: float              # Delay time after execution of IPMI set fan level function
+    zone_names: List[str]               # Zone names.
 
     # Constant values for IPMI fan modes:
     STANDARD_MODE: int = 0
@@ -69,11 +70,8 @@ class Ipmi:
     PUE_MODE: int = 3
     HEAVY_IO_MODE: int = 4
 
-    # Constant values for IPMI fan zones:
-    CPU_ZONE: int = 0
-    HD_ZONE: int = 1
 
-    def __init__(self, command: str, fan_mode_delay: int, fan_level_delay: int) -> None:
+    def __init__(self, command: str, fan_mode_delay: int, fan_level_delay: int, zone_names: List[str]) -> None:
         """Initialize the Ipmi class.
 
         Args:
@@ -85,6 +83,7 @@ class Ipmi:
         self.command = command
         self.fan_mode_delay = fan_mode_delay
         self.fan_level_delay = fan_level_delay
+        self.zone_names = zone_names
 
         # Check 1: fan_mode_delay must be positive.
         if self.fan_mode_delay < 0:
@@ -453,7 +452,10 @@ class Ipmi:
                 break
             z = IpmiZone()
             z.id = n
-            z.name = f"{n}. zone"
+            if self.zone_names[n] is not None:
+                z.name = self.zone_names[n]
+            else:
+                z.name = f'Zone {n}'
             z.level = l
             n += 1
             result.append(z)
@@ -467,7 +469,7 @@ class Ipmi:
 
         # Validate zone parameter
         try:
-            r = subprocess.run([self.command, 'sel', 'list'],
+            r = subprocess.run([self.command, 'sel', 'elist'],
                            check=False, capture_output=True, text=True)
             if r.returncode != 0:
                 raise RuntimeError(f'ipmitool error ({r.returncode}): {r.stderr}')

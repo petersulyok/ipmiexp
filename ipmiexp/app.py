@@ -60,7 +60,8 @@ class IpmiExpApp(App):
         """"""
         # Load configuration.
         self.config = Config(config_file)
-        self.ipmi = Ipmi(self.config.ipmi_command, self.config.ipmi_fan_mode_delay, self.config.ipmi_fan_level_delay)
+        self.ipmi = Ipmi(self.config.ipmi_command, self.config.ipmi_fan_mode_delay, self.config.ipmi_fan_level_delay,
+                         self.config.zone_names)
         self.read_data()
         super().__init__()
 
@@ -149,8 +150,9 @@ class IpmiExpApp(App):
                 table = self.query_one("#zones_table", DataTable)
                 table.update_cell_at(Coordinate(zone, 2), result, update_width=True)
 
-        table = self.query_one("#zones_table", DataTable)
-        self.push_screen(SetLevelWindow(table.cursor_row), save_new_level)
+        if self.query_one(ContentSwitcher).current == "fans_page":
+            table = self.query_one("#zones_table", DataTable)
+            self.push_screen(SetLevelWindow(self.zones[table.cursor_row]), save_new_level)
 
     def action_refresh(self) -> None:
         """Re-read data and refresh the display."""
@@ -251,9 +253,9 @@ class IpmiExpApp(App):
                                  IpmiSensor.NO_VALUE)])
         table = self.query_one("#zones_table", DataTable)
         table.border_title = "Zones"
-        table.add_columns("Number", "Name", "Level", "Fans")
+        table.add_columns("ID", "Name", "Level", "Fans")
         for z in self.zones:
-            table.add_rows([(f"{z.id}", z.name, z.level, "-")])
+            table.add_rows([(f'{z.id}', z.name, z.level, "-")])
 
     def update_sensor_table(self) -> None:
         """Update the sensor table (Reading, threshold columns) after re-reading the sensors."""

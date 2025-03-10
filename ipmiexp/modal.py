@@ -7,7 +7,7 @@ from textual.app import ComposeResult
 from textual.screen import ModalScreen
 from textual.containers import Container, Horizontal
 from textual.widgets import Label, Button, RadioButton, RadioSet, Input
-from ipmiexp import Ipmi, IpmiSensor
+from ipmiexp import Ipmi, IpmiSensor, IpmiZone
 
 class ModalWindow(ModalScreen):
     """A generic modal screen class."""
@@ -170,16 +170,16 @@ class SetLevelWindow(ModalScreen):
         margin: 2 4;
     }
     """
-    zone: int
+    zone: IpmiZone
 
-    def __init__(self, zone: int):
+    def __init__(self, zone: IpmiZone):
         self.zone = zone
         super().__init__()
 
     def compose(self) -> ComposeResult:
         with Container():
-            yield Label(f'Enter the new level for zone {self.zone}:')
-            yield Input(placeholder="level (0-100)", type="integer")
+            yield Label('Enter a new level for \'' + self.zone.name + '\':')
+            yield Input(id="level_input", value=str(self.zone.level), type="integer")
             with Horizontal():
                 yield Button("Set", id="set", variant="success")
                 yield Button("Cancel", id="cancel", variant="error")
@@ -192,8 +192,7 @@ class SetLevelWindow(ModalScreen):
         self.dismiss(result)
 
     def on_mount(self) -> None:
-        l = self.query_one(Label)
-        l.focus()
+        self.query_one('#level_input', Input).focus()
 
 class SetThresholdWindow(ModalScreen):
     """A modal pop-up window for setting new sensor threshold."""
@@ -213,8 +212,8 @@ class SetThresholdWindow(ModalScreen):
     SetThresholdWindow > Container > Label {
         width: auto;
         content-align-horizontal: center;
-        margin-top: 1;
-        padding: 2
+        margin: 1;
+        padding: 1;
     }
 
     SetThresholdWindow > Container > Horizontal {
@@ -251,7 +250,7 @@ class SetThresholdWindow(ModalScreen):
 
     def compose(self) -> ComposeResult:
         with Container():
-            yield Label(f'Enter new sensor thresholds for {self.sensor.name}:')
+            yield Label(f'Enter new sensor thresholds for \'{self.sensor.name}\':')
             if self.sensor.has_lnr:
                 with Horizontal():
                     yield Label('LNR')

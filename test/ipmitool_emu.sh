@@ -112,9 +112,9 @@ if [[ $1 = "-v" && $2 = "sdr" ]] ; then
 fi
 
 # IPMI read events.
-if [[ $1 = "sel" && $2 = "list" ]] ; then
+if [[ $1 = "sel" && $2 = "elist" ]] ; then
     curdir=$(dirname "$0")
-    cat "$curdir/ipmitool_sel_list.txt"
+    cat "$curdir/ipmitool_sel_elist.txt"
     exit 0
 fi
 

@@ -6,6 +6,8 @@ import os
 import sys
 from configparser import ConfigParser
 from pathlib import Path
+from typing import List
+
 
 class Config:
 
@@ -25,10 +27,22 @@ fan_mode_delay=10
 fan_level_delay=2
 # IPMI parameters for remote access (HOST is the BMC network address).
 #remote_parameters=-U USERNAME -P PASSWORD -H HOST
+
+[Zones]
+0=CPU zone
+1=Peripheral zone
+2=Zone 2
+3=Zone 3
+4=Zone 4
+5=Zone 5
+6=Zone 6
+7=Zone 7
 """
 
     # Constant values for the configuration parameters.
     CS_IPMI: str = 'Ipmi'
+    CS_ZONE: str = 'Zone names'
+
     CV_IPMI_COMMAND: str = 'command'
     CV_IPMI_FAN_MODE_DELAY: str = 'fan_mode_delay'
     CV_IPMI_FAN_LEVEL_DELAY: str = 'fan_level_delay'
@@ -39,6 +53,7 @@ fan_level_delay=2
     ipmi_command: str
     ipmi_fan_mode_delay: int
     ipmi_fan_level_delay: int
+    zone_names:List[str]
 
     def __init__(self, config_file: str):
 
@@ -71,5 +86,15 @@ fan_level_delay=2
         self.ipmi_command = self.pc[self.CS_IPMI].get(self.CV_IPMI_COMMAND, self.DEF_IPMITOOL_PATH)
         self.ipmi_fan_mode_delay = self.pc[self.CS_IPMI].getint(self.CV_IPMI_FAN_MODE_DELAY, fallback=10)
         self.ipmi_fan_level_delay = self.pc[self.CS_IPMI].getint(self.CV_IPMI_FAN_MODE_DELAY, fallback=2)
+
+        # Read zone names.
+        self.zone_names = []
+        index=0
+        while index < 8:
+            s = self.pc[self.CS_ZONE].get(str(index))
+            if s is None:
+                break
+            self.zone_names.append(s)
+            index += 1
 
 # End.
