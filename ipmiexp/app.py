@@ -102,7 +102,6 @@ class IpmiExpApp(App):
 
         def save_threshold(result: List[Union[float, int]]) -> None:
             if len(result):
-                print(result)
                 table = self.query_one("#sensors_page", DataTable)
                 sensor = self.sensors[table.cursor_row]
                 lower = []
@@ -131,6 +130,8 @@ class IpmiExpApp(App):
                     self.ipmi.set_lower_threshold(sensor.name, lower)
                 if len(upper):
                     self.ipmi.set_upper_threshold(sensor.name, upper)
+                self.sensors = self.ipmi.read_sensors()
+                self.update_sensor_table()
 
         if self.query_one(ContentSwitcher).current == "sensors_page":
             table = self.query_one("#sensors_page", DataTable)
@@ -158,54 +159,7 @@ class IpmiExpApp(App):
         self.read_data()
 
         # Update table on "Sensors" page.
-        table = self.query_one("#sensors_page", DataTable)
-        row=0
-        for r in self.sensors:
-            if r.has_reading:
-                if r.has_unit:
-                    if r.type_id == IpmiSensor.TYPE_VOLTAGE:
-                        value = f'{r.reading:.3f}'
-                    else:
-                        value = f'{r.reading}'
-                else:
-                    value = f'0x{r.reading:02x}'
-            else:
-                value = IpmiSensor.NO_VALUE
-            if r.has_reading and r.has_threshold:
-                if r.has_unr:
-                    unr = f'{r.unr:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.unr}'
-                else:
-                    unr = IpmiSensor.NO_VALUE
-                if r.has_ucr:
-                    ucr = f'{r.ucr:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.ucr}'
-                else:
-                    ucr = IpmiSensor.NO_VALUE
-                if r.has_unc:
-                    unc = f'{r.unc:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.unc}'
-                else:
-                    unc = IpmiSensor.NO_VALUE
-                if r.has_lnr:
-                    lnr = f'{r.lnr:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.lnr}'
-                else:
-                    lnr = IpmiSensor.NO_VALUE
-                if r.has_lcr:
-                    lcr = f'{r.lcr:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.lcr}'
-                else:
-                    lcr = IpmiSensor.NO_VALUE
-                if r.has_lnc:
-                    lnc = f'{r.lnc:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.lnc}'
-                else:
-                    lnc = IpmiSensor.NO_VALUE
-            else:
-                unr = ucr = unc = lnr = lcr = lnc = IpmiSensor.NO_VALUE
-            table.update_cell_at(Coordinate(row, 3), value, update_width=True)
-            table.update_cell_at(Coordinate(row, 5), lnr, update_width=True)
-            table.update_cell_at(Coordinate(row, 6), lcr, update_width=True)
-            table.update_cell_at(Coordinate(row, 7), lnc, update_width=True)
-            table.update_cell_at(Coordinate(row, 8), unc, update_width=True)
-            table.update_cell_at(Coordinate(row, 9), ucr, update_width=True)
-            table.update_cell_at(Coordinate(row, 10), unr, update_width=True)
-            row+=1
+        self.update_sensor_table()
 
         # Update tables on "Fans" page.
         table = self.query_one("#fans_table", DataTable)
@@ -227,9 +181,9 @@ class IpmiExpApp(App):
             if result != -1 and result != self.fan_mode:
                 self.ipmi.set_fan_mode(result)
                 self.fan_mode = self.ipmi.get_fan_mode()
-                self.query_one("#current_fan_mode",
-                               Label).update(f"Current fan mode: {self.ipmi.get_fan_mode_name(self.fan_mode)}"
-                                             f" ({self.fan_mode})")
+                self.query_one("#current_fan_mode", Label).update(
+                               f"Current fan mode: {self.ipmi.get_fan_mode_name(self.fan_mode)}"
+                               f" ({self.fan_mode})")
 
         if event.button.id in {"sensors_page", "fans_page", "events_page", "bmc_page", "settings_page"}:
             self.query_one('#'+self.query_one(ContentSwitcher).current, Button).variant = "default"
@@ -300,5 +254,58 @@ class IpmiExpApp(App):
         table.add_columns("Number", "Name", "Level", "Fans")
         for z in self.zones:
             table.add_rows([(f"{z.id}", z.name, z.level, "-")])
+
+    def update_sensor_table(self) -> None:
+        """Update the sensor table (Reading, threshold columns) after re-reading the sensors."""
+        table = self.query_one("#sensors_page", DataTable)
+        row=0
+        for r in self.sensors:
+            if r.has_reading:
+                if r.has_unit:
+                    if r.type_id == IpmiSensor.TYPE_VOLTAGE:
+                        value = f'{r.reading:.3f}'
+                    else:
+                        value = f'{r.reading}'
+                else:
+                    value = f'0x{r.reading:02x}'
+            else:
+                value = IpmiSensor.NO_VALUE
+            if r.has_reading and r.has_threshold:
+                if r.has_unr:
+                    unr = f'{r.unr:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.unr}'
+                else:
+                    unr = IpmiSensor.NO_VALUE
+                if r.has_ucr:
+                    ucr = f'{r.ucr:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.ucr}'
+                else:
+                    ucr = IpmiSensor.NO_VALUE
+                if r.has_unc:
+                    unc = f'{r.unc:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.unc}'
+                else:
+                    unc = IpmiSensor.NO_VALUE
+                if r.has_lnr:
+                    lnr = f'{r.lnr:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.lnr}'
+                else:
+                    lnr = IpmiSensor.NO_VALUE
+                if r.has_lcr:
+                    lcr = f'{r.lcr:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.lcr}'
+                else:
+                    lcr = IpmiSensor.NO_VALUE
+                if r.has_lnc:
+                    lnc = f'{r.lnc:.3f}' if r.type_id == IpmiSensor.TYPE_VOLTAGE else f'{r.lnc}'
+                else:
+                    lnc = IpmiSensor.NO_VALUE
+            else:
+                unr = ucr = unc = lnr = lcr = lnc = IpmiSensor.NO_VALUE
+            table.update_cell_at(Coordinate(row, 3), value, update_width=True)
+            table.update_cell_at(Coordinate(row, 5), lnr, update_width=True)
+            table.update_cell_at(Coordinate(row, 6), lcr, update_width=True)
+            table.update_cell_at(Coordinate(row, 7), lnc, update_width=True)
+            table.update_cell_at(Coordinate(row, 8), unc, update_width=True)
+            table.update_cell_at(Coordinate(row, 9), ucr, update_width=True)
+            table.update_cell_at(Coordinate(row, 10), unr, update_width=True)
+            row+=1
+
+
 
 # End.
