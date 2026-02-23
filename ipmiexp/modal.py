@@ -63,6 +63,53 @@ class ModalWindow(ModalScreen):
         self.app.pop_screen()
 
 
+class ConfirmWindow(ModalScreen):
+    """A generic confirmation modal that dismisses with True (confirmed) or False (cancelled)."""
+
+    DEFAULT_CSS = """
+    ConfirmWindow {
+        align: center middle;
+    }
+
+    ConfirmWindow > Container {
+        width: auto;
+        height: auto;
+        border: thick $background 80%;
+        background: $surface;
+        padding: 1;
+    }
+
+    ConfirmWindow > Container > Label {
+        width: 100%;
+        content-align-horizontal: center;
+        margin-top: 1;
+    }
+
+    ConfirmWindow > Container > Horizontal {
+        width: auto;
+        height: auto;
+    }
+
+    ConfirmWindow > Container > Horizontal > Button {
+        margin: 2 4;
+    }
+    """
+
+    def __init__(self, message: str):
+        self.message = message
+        super().__init__()
+
+    def compose(self) -> ComposeResult:
+        with Container():
+            yield Label(self.message)
+            with Horizontal():
+                yield Button("Confirm", id="confirm", variant="success")
+                yield Button("Cancel", id="cancel", variant="error")
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        self.dismiss(event.button.id == "confirm")
+
+
 class SetFanModeWindow(ModalScreen):
     """A modal pop-up window for setting new fan mode."""
 
