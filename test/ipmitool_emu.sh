@@ -123,6 +123,41 @@ if [[ $1 = "sensor" && $2 = "thresh" ]] ; then
     exit 0
 fi
 
+# IPMI bmc info command.
+if [[ $1 = "bmc" && $2 = "info" ]] ; then
+    cat <<EOF
+Device ID                 : 32
+Device Revision           : 1
+Firmware Revision         : 1.74
+IPMI Version              : 2.0
+Manufacturer ID           : 10876
+Manufacturer Name         : Super Micro Computer Inc.
+Product ID                : 6929 (0x1b11)
+Product Name              : X11SCH-LN4F
+Device Available          : yes
+Provides Device SDRs      : no
+Additional Device Support :
+    Sensor Device
+    SDR Repository Device
+    SEL Device
+    FRU Inventory Device
+    IPMB Event Receiver
+    IPMB Event Generator
+    Chassis Device
+Aux Firmware Rev Info     : 
+    0x19
+    0x01
+    0x00
+    0x00
+EOF
+    exit 0
+fi
+
+
+# IPMI bmc reset command.
+if [[ $1 = "bmc" && $2 = "reset" ]] ; then
+    exit 0
+fi
 
 # Unknown command.
 exit 1
