@@ -477,6 +477,35 @@ class Ipmi:
             raise e
         return r.stdout
 
+    def read_bmc_info(self) -> str:
+        """Read BMC information from `ipmitool bmc info`."""
+        r: subprocess.CompletedProcess  # result of the executed process
+
+        try:
+            r = subprocess.run([self.command, 'bmc', 'info'],
+                               check=False, capture_output=True, text=True)
+            if r.returncode != 0:
+                raise RuntimeError(f'ipmitool error ({r.returncode}): {r.stderr}')
+        except (FileNotFoundError, RuntimeError) as e:
+            raise e
+        return r.stdout
+
+    def bmc_reset(self, reset_type: str = 'cold') -> None:
+        """Reset the BMC.
+
+        Args:
+            reset_type (str): reset type ('cold' or 'warm')
+        """
+        r: subprocess.CompletedProcess  # result of the executed process
+
+        try:
+            r = subprocess.run([self.command, 'bmc', 'reset', reset_type],
+                               check=False, capture_output=True, text=True)
+            if r.returncode != 0:
+                raise RuntimeError(f'ipmitool error ({r.returncode}): {r.stderr}')
+        except (FileNotFoundError, RuntimeError) as e:
+            raise e
+
     def set_lower_threshold(self, name: str, lower: List[str]) -> None:
         """Set lower threshold values for the specific sensor.
         """
