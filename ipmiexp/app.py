@@ -25,12 +25,23 @@ class IpmiExpApp(App):
     events: str                 # IPMI events.
     bmc_info: str               # BMC information text.
     _loaded: set                # Set of tab IDs whose data has been loaded.
+    _current_tab: str           # Currently active tab ID.
 
     BINDINGS = [
         ("t", "set_threshold", "Set threshold"),
         ("l", "set_zone_level", "Set zone level"),
         ("r", "refresh", "Refresh"),
     ]
+
+    def check_action(self, action: str, parameters: tuple) -> bool | None:  # noqa: ARG002
+        """Show only the bindings relevant to the current tab in the footer."""
+        if action == "set_threshold":
+            return True if self._current_tab == "sensors_page" else None
+        if action == "set_zone_level":
+            return True if self._current_tab == "fans_page" else None
+        if action == "refresh":
+            return True if self._current_tab in {"sensors_page", "fans_page", "events_page"} else None
+        return True
 
     CSS = """
     Screen {
@@ -72,6 +83,7 @@ class IpmiExpApp(App):
         self.events = ""
         self.bmc_info = ""
         self._loaded = set()
+        self._current_tab = "sensors_page"
         super().__init__()
 
     def compose(self) -> ComposeResult:
@@ -343,6 +355,8 @@ class IpmiExpApp(App):
             self.query_one('#'+self.query_one(ContentSwitcher).current, Button).variant = "default"
             self.query_one(ContentSwitcher).current = event.button.id
             self.query_one('#'+event.button.id, Button).variant = "primary"
+            self._current_tab = event.button.id
+            self.refresh_bindings()
             self._load_tab(event.button.id)
         if event.button.id == "set_fan_mode":
             m = SetFanModeWindow(self.fan_mode)
