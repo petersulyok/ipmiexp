@@ -314,7 +314,7 @@ name = "importlib-metadata"
 version = "8.7.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "zipp" },
+    { name = "zipp", marker = "python_full_version < '3.12'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/76/66/650a33bd90f786193e4de4b3ad86ea60b53c89b669a5c7be931fac31cdb0/importlib_metadata-8.7.0.tar.gz", hash = "sha256:d13b81ad223b890aa16c5471f2ac3056cf76c5f10f82d6f9292f0b415f389000", size = 56641, upload-time = "2025-04-27T15:29:01.736Z" }
 wheels = [
@@ -332,7 +332,7 @@ wheels = [
 
 [[package]]
 name = "ipmiexp"
-version = "0.1.0"
+version = "0.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "textual" },
@@ -343,12 +343,14 @@ dev = [
     { name = "build" },
     { name = "coverage" },
     { name = "mock" },
-    { name = "pylint" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "pytest-mock" },
-    { name = "ruff" },
     { name = "twine" },
+]
+lint = [
+    { name = "pylint" },
+    { name = "ruff" },
 ]
 
 [package.metadata]
@@ -356,15 +358,17 @@ requires-dist = [{ name = "textual" }]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "build", specifier = "==1.2.2.post1" },
-    { name = "coverage", specifier = "==7.6.12" },
-    { name = "mock", specifier = "==5.2.0" },
-    { name = "pylint", specifier = "==3.3.5" },
-    { name = "pytest", specifier = "==8.3.5" },
-    { name = "pytest-cov", specifier = "==6.0.0" },
-    { name = "pytest-mock", specifier = "==3.14.0" },
-    { name = "ruff", specifier = "==0.11.5" },
-    { name = "twine", specifier = "==6.1.0" },
+    { name = "build" },
+    { name = "coverage" },
+    { name = "mock" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
+    { name = "pytest-mock" },
+    { name = "twine" },
+]
+lint = [
+    { name = "pylint" },
+    { name = "ruff" },
 ]
 
 [[package]]
