@@ -54,6 +54,7 @@ Issues = "https://github.com/petersulyok/ipmiexp/issues"
 ipmiexp = "ipmiexp.cmd:main"
 
 [tool.setuptools]
+package-dir = {"" = "src"}
 packages = ["ipmiexp"]
 
 [tool.uv]

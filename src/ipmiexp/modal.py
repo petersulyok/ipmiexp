@@ -7,7 +7,7 @@ from textual.app import ComposeResult
 from textual.screen import ModalScreen
 from textual.containers import Container, Horizontal
 from textual.widgets import Label, Button, RadioButton, RadioSet, Input
-from ipmiexp import Ipmi, IpmiSensor, IpmiZone
+from ipmiexp.ipmi import Ipmi, IpmiSensor, IpmiZone
 
 class ModalWindow(ModalScreen):
     """A generic modal screen class."""
